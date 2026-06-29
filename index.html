@@ -9,6 +9,13 @@
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
         .glass-panel { background: rgba(17, 22, 34, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         select, input { background-color: #0b0f17 !important; color: #fff !important; }
+        
+        /* Added motion for the button */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.7); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite ease-in-out; }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center font-sans antialiased">
@@ -68,7 +75,7 @@
             </select>
         </div>
 
-        <button onclick="runQuery()" id="query-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black py-4 rounded-xl text-sm uppercase tracking-widest shadow-lg shadow-blue-600/20 transition-all">
+        <button onclick="runQuery()" id="query-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black py-4 rounded-xl text-sm uppercase tracking-widest transition-all animate-pulse-glow">
             QUERY MARKET VALUATION
         </button>
 
@@ -80,7 +87,8 @@
 
     <script>
         const yearSelect = document.getElementById('year-select');
-        for (let i = 2028; i >= 1800; i--) {
+        // Updated to end at 2026
+        for (let i = 2026; i >= 1800; i--) {
             const opt = document.createElement('option');
             opt.value = i; opt.innerHTML = i;
             yearSelect.appendChild(opt);
@@ -94,7 +102,8 @@
 
             if(!apiKey) { alert("Please enter your API key."); return; }
 
-            btn.innerText = "EVALUATING...";
+            btn.innerText = "ANALYZING...";
+            btn.classList.remove('animate-pulse-glow');
             btn.disabled = true;
             display.classList.add('hidden');
             
@@ -114,7 +123,7 @@
                 });
 
                 if (response.status === 429) {
-                    throw new Error("Rate limit exceeded. Please wait a few moments and try again.");
+                    throw new Error("Server is busy. Please wait 10 seconds before your next analysis.");
                 }
 
                 if (!response.ok) {
@@ -129,6 +138,7 @@
                 display.classList.remove('hidden');
             } finally {
                 btn.innerText = "QUERY MARKET VALUATION";
+                btn.classList.add('animate-pulse-glow');
                 btn.disabled = false;
             }
         }
