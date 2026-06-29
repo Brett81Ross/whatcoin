@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Numismatic Matrix</title>
+    <title>WhatCoin™ - Autonomous AI Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
@@ -75,7 +75,7 @@
 
         <div id="result-display" class="hidden mt-6 p-4 border border-blue-500/30 bg-blue-900/20 rounded-xl text-center">
             <p class="text-[9px] font-black text-blue-300 uppercase tracking-widest mb-1">Estimated Market Valuation</p>
-            <div id="valuation-text" class="text-2xl font-black text-white tracking-tight"></div>
+            <div id="valuation-text" class="text-lg font-black text-white tracking-tight"></div>
         </div>
     </div>
 
@@ -101,7 +101,7 @@
             const payload = {
                 "contents": [{
                     "parts": [{
-                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. Respond ONLY with the numerical dollar amount or range. No extra conversational text.`
+                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. If no collector market exists, state the face value or 'Market value not yet established'.`
                     }]
                 }]
             };
@@ -114,12 +114,12 @@
                 });
 
                 const data = await response.json();
-                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No valuation data available.";
+                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to reach appraisal service.";
                 
                 valText.innerText = result.trim();
                 display.classList.remove('hidden');
             } catch (err) {
-                valText.innerText = "Query Error";
+                valText.innerText = "Connection Error";
                 display.classList.remove('hidden');
             } finally {
                 btn.innerText = "QUERY MARKET VALUATION";
