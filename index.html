@@ -3,72 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dope House Coin Labs™ - Autonomous Numismatic Suite</title>
+    <title>WhatCoin™ - Autonomous AI Intelligence Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0b0f17; color: #f0f4f8; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        body { background-color: #0b0f17; color: #e2e8f0; }
+        .glass { background-color: #111622; border: 1px solid #1e293b; }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto font-sans antialiased">
+<body class="p-4 max-w-md mx-auto font-sans">
 
-    <!-- Branding -->
-    <div class="text-center my-4 border-b border-gray-900 pb-5">
-        <img src="logo5.png" alt="Logo" class="w-24 h-24 mx-auto rounded-full mb-2">
-        <h1 class="text-2xl font-black uppercase font-mono">Dope House Coin Labs™</h1>
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <img src="logo5.png" alt="Logo" class="w-20 h-20 mx-auto mb-2 rounded-full">
+        <h1 class="text-2xl font-black text-white">WhatCoin™</h1>
+        <p class="text-xs text-blue-400 font-bold uppercase tracking-widest">Autonomous AI Intelligence Suite</p>
     </div>
 
-    <!-- Terminology Browser -->
-    <div class="bg-[#111622] rounded-xl p-4 mb-6 border border-gray-800">
-        <h2 class="text-xs font-bold uppercase text-amber-500 mb-4">Numismatic Knowledge Base</h2>
-        <div id="terms-list" class="space-y-3 text-sm">
-            <details class="group bg-[#182032] p-3 rounded-lg">
-                <summary class="font-bold cursor-pointer text-blue-400">Key Date</summary>
-                <p class="mt-2 text-gray-300 text-xs">The rarest or most highly prized date and mint mark combination in a specific coin series.</p>
-            </details>
-            <details class="group bg-[#182032] p-3 rounded-lg">
-                <summary class="font-bold cursor-pointer text-blue-400">Manufacturing Slang</summary>
-                <p class="mt-2 text-gray-300 text-xs">**Broadstrike**: Struck without a collar, causing flattening. **Cud**: A raised area from a broken minting die. **Hairlines**: Tiny, thin scratches from improper handling.</p>
-            </details>
-            <details class="group bg-[#182032] p-3 rounded-lg">
-                <summary class="font-bold cursor-pointer text-blue-400">Collector Slang</summary>
-                <p class="mt-2 text-gray-300 text-xs">**Slab**: Certified and encapsulated coin. **Body Bag**: A coin returned due to damage or being counterfeit. **Cull**: A heavily worn, low-value coin. **Whizzing**: Illegal mechanical polishing.</p>
-            </details>
-            <details class="group bg-[#182032] p-3 rounded-lg">
-                <summary class="font-bold cursor-pointer text-blue-400">Toning Spectrum</summary>
-                <p class="mt-2 text-gray-300 text-xs">Natural discoloration from oxidation and sulfur. Desirable toning includes vibrant rainbow patterns, while undesirable toning appears dark or splotchy.</p>
-            </details>
-            <details class="group bg-[#182032] p-3 rounded-lg">
-                <summary class="font-bold cursor-pointer text-blue-400">Natural vs. Artificial</summary>
-                <p class="mt-2 text-gray-300 text-xs">Artificial toning is an intentional color alteration that often looks like "floating" paint or aggressive "bullseye" patterns.</p>
-            </details>
+    <!-- Credentials -->
+    <div class="glass p-4 rounded-xl mb-4">
+        <label class="text-[10px] font-bold text-gray-500 uppercase">Gemini API Credentials</label>
+        <input type="password" id="api-key" value="************************" class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm font-mono text-gray-300">
+    </div>
+
+    <!-- Main Controls -->
+    <div class="glass p-4 rounded-xl mb-4 space-y-4">
+        <div>
+            <label class="text-[10px] font-bold text-gray-500 uppercase">Denomination & Analysis</label>
+            <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+                <option>Cent (Penny)</option>
+                <option>Tone (Toning Evaluation)</option>
+            </select>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="text-[10px] font-bold text-gray-500 uppercase">Year</label>
+                <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+                    <option>1960</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-gray-500 uppercase">Mint Mark</label>
+                <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+                    <option>P (Philadelphia)</option>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label class="text-[10px] font-bold text-gray-500 uppercase">Grade Scale Evaluation</label>
+            <div class="bg-[#1e293b] p-2 rounded-lg text-blue-400 text-xs font-bold mt-1">MS-65 (Uncirculated)</div>
+            <input type="range" class="w-full mt-3 accent-blue-600">
+            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>PO-1 (Poor)</span>
+                <span>MS-70 (Uncirculated)</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 pt-2">
+            <button class="bg-[#1e293b] text-amber-500 font-bold py-3 rounded-lg text-sm uppercase">Multipliers</button>
+            <button onclick="runQuery()" class="bg-blue-600 text-white font-bold py-3 rounded-lg text-sm uppercase">Query Live AI</button>
         </div>
     </div>
 
-    <!-- API Tool -->
-    <div class="bg-[#111622] rounded-xl p-4 border border-[#222c3f]">
-        <input id="api-key-input" type="password" placeholder="Enter API Key" class="w-full bg-[#182032] rounded-lg p-3 text-white border border-[#2e3b54] mb-4">
-        <button onclick="executeSearch()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-lg uppercase">Query Live AI</button>
+    <!-- Error/Status Display -->
+    <div id="error-box" class="glass border-red-900/50 p-4 rounded-xl mb-4 text-red-500 text-xs hidden">
+        Evaluation parsing failed. Try clicking Query Live AI again.
+    </div>
+
+    <!-- Specification Display -->
+    <div class="glass p-4 rounded-xl">
+        <label class="text-[10px] font-bold text-gray-500 uppercase">Coin Specification</label>
+        <div class="text-white font-bold mt-1">1977 Lincoln Memorial Cent</div>
     </div>
 
     <script>
-        async function executeSearch() {
-            const apiKey = document.getElementById('api-key-input').value.trim();
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-            const prompt = "Analyze coin market value. Return only the numerical dollar amount.";
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await response.json();
-                console.log(data);
-            } catch (error) {
-                alert("API Error: " + error.message);
-            }
+        function runQuery() {
+            document.getElementById('error-box').classList.remove('hidden');
         }
     </script>
 </body>
