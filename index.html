@@ -31,7 +31,7 @@
             <input 
                 id="search-input" 
                 type="text" 
-                placeholder="Type Year, Mint Mark, or Variety (e.g., 2004 D)..." 
+                placeholder="Type Year, Denomination, or Variety (e.g., 2025 half)..." 
                 oninput="handleSearch(this.value)"
                 class="w-full bg-[#182032] rounded-lg p-3.5 text-sm text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-blue-500 transition-all font-medium"
             >
@@ -55,7 +55,7 @@
         <div class="flex gap-4 mt-2 text-xs text-gray-400">
             <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
             <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
-            <div>Base Numismatic Value: <span id="target-coin-base" class="text-green-400 font-semibold">$0.25</span></div>
+            <div>Base Value: <span id="target-coin-base" class="text-green-400 font-semibold">$0.00</span></div>
         </div>
     </div>
 
@@ -86,7 +86,7 @@
     <!-- Real Market Appraised Live Valuation Output Box -->
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 shadow-2xl text-center relative overflow-hidden">
         <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Estimated Real Market Value</span>
-        <div id="display-value" class="text-5xl font-black text-white my-2.5">$0.25</div>
+        <div id="display-value" class="text-5xl font-black text-white my-2.5">$0.00</div>
         <p class="text-[10px] text-gray-400 max-w-xs mx-auto mb-4 leading-normal">Derived from aggregated auction verification criteria and real-time trends.</p>
         
         <input id="input-notes" type="text" placeholder="Add specific observation details..." 
@@ -110,13 +110,20 @@
 
     <!-- App Configuration Logic Engine -->
     <script>
-        // Full Dataset Mapped out explicitly with search tag indexing
+        // Expanded Dataset supporting Pennies, Quarters, and Half Dollars with mint error multipliers
         const COIN_DATASET = [
+            // --- HALF DOLLARS ---
+            { id: '2025_P_HALF', year: '2025', mint: 'P', name: 'Kennedy Half Dollar', baseValue: 0.50, tags: ['2025', 'p', 'half dollar', 'kennedy'], errors: [{ id: 'hd_25_ddo', label: 'Doubled Die Obverse (DDO)', premiumAU: 20, premiumMS: 80 }, { id: 'hd_25_clip', label: 'Clipped Planchet Error', premiumAU: 35, premiumMS: 110 }] },
+            { id: '1970_D_HALF', year: '1970', mint: 'D', name: 'Kennedy Half Dollar (40% Silver)', baseValue: 4.50, tags: ['1970', 'd', 'half dollar', 'kennedy', 'silver', 'rarity'], errors: [{ id: 'hd_70_mint', label: 'Key Date Low Mintage Premium', premiumAU: 15, premiumMS: 45 }] },
+            
+            // --- PENNIES ---
+            { id: '1955_P_PENNY', year: '1955', mint: 'P', name: 'Lincoln Wheat Penny', baseValue: 0.05, tags: ['1955', 'p', 'penny', 'lincoln', 'wheat', 'doubled die', 'ddo'], errors: [{ id: 'wp_55_ddo', label: 'Major Doubled Die Obverse (King of Errors)', premiumAU: 1200, premiumMS: 2800 }] },
+            { id: '1999_P_PENNY', year: '1999', mint: 'P', name: 'Lincoln Shield/Memorial Penny', baseValue: 0.01, tags: ['1999', 'p', 'penny', 'lincoln', 'wide am'], errors: [{ id: 'p_99_wide', label: 'Wide AM Variety (Reverse Die Error)', premiumAU: 15, premiumMS: 150 }] },
+            
+            // --- STATE QUARTERS ---
             { id: '1999_P_DE', year: '1999', mint: 'P', name: 'Delaware State Quarter', baseValue: 0.25, tags: ['1999', 'p', 'delaware', 'spitting', 'horse', 'die crack'], errors: [{ id: 'del_spit', label: 'Spitting Horse (Die Crack Variety)', premiumAU: 10, premiumMS: 50 }] },
             { id: '2004_D_WI', year: '2004', mint: 'D', name: 'Wisconsin State Quarter', baseValue: 0.25, tags: ['2004', 'd', 'wisconsin', 'corn', 'leaf', 'high', 'low'], errors: [{ id: 'wi_high', label: 'Extra Corn Leaf - High Variety', premiumAU: 50, premiumMS: 300 }, { id: 'wi_low', label: 'Extra Corn Leaf - Low Variety', premiumAU: 40, premiumMS: 250 }] },
-            { id: '2005_P_KS', year: '2005', mint: 'P', name: 'Kansas State Quarter', baseValue: 0.25, tags: ['2005', 'p', 'kansas', 'rust', 'god', 'bison', 'spitting'], errors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Filled Die)', premiumAU: 15, premiumMS: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack Variety)', premiumAU: 5, premiumMS: 45 }] },
-            { id: '2005_P_MN', year: '2005', mint: 'P', name: 'Minnesota State Quarter', baseValue: 0.25, tags: ['2005', 'p', 'minnesota', 'tree', 'extra', 'doubled die'], errors: [{ id: 'mn_tree', label: 'Extra Tree (Doubled Die Reverse)', premiumAU: 10, premiumMS: 120 }] },
-            { id: '2008_P_AZ', year: '2008', mint: 'P', name: 'Arizona State Quarter', baseValue: 0.25, tags: ['2008', 'p', 'arizona', 'cactus', 'extra', 'die chip'], errors: [{ id: 'az_cactus', label: 'Extra Cactus Leaf / Complex Die Chip', premiumAU: 3, premiumMS: 25 }] }
+            { id: '2005_P_KS', year: '2005', mint: 'P', name: 'Kansas State Quarter', baseValue: 0.25, tags: ['2005', 'p', 'kansas', 'rust', 'god', 'bison', 'spitting'], errors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Filled Die)', premiumAU: 15, premiumMS: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack Variety)', premiumAU: 5, premiumMS: 45 }] }
         ];
 
         let selectedCoin = null;
@@ -129,7 +136,7 @@
             calculateAppraisal();
         }
 
-        // Live Google-Style Predictive Input Logic
+        // Google-Style Predictive Dropdown Logic
         function handleSearch(query) {
             const dropdown = document.getElementById('predictive-dropdown');
             if (!query.trim()) {
@@ -137,14 +144,16 @@
                 return;
             }
 
-            const cleanQuery = query.toLowerCase();
+            const cleanQuery = query.toLowerCase().trim();
+            
+            // Filters based on keywords, layout year, denomination, or specific error keywords
             const matches = COIN_DATASET.filter(coin => {
-                return coin.tags.some(tag => tag.includes(cleanQuery)) || 
-                       `${coin.year} ${coin.mint} ${coin.name}`.toLowerCase().includes(cleanQuery);
+                const combinedString = `${coin.year} ${coin.mint} ${coin.name} ${coin.tags.join(' ')}`.toLowerCase();
+                return cleanQuery.split(' ').every(word => combinedString.includes(word));
             });
 
             if (matches.length === 0) {
-                dropdown.innerHTML = `<div class="p-3 text-xs text-gray-500 italic">No historical variants matching sequence.</div>`;
+                dropdown.innerHTML = `<div class="p-3 text-xs text-gray-500 italic">No variant profile matching criteria found yet.</div>`;
             } else {
                 dropdown.innerHTML = matches.map(coin => `
                     <div 
@@ -169,7 +178,6 @@
             document.getElementById('search-input').value = `${selectedCoin.year} ${selectedCoin.mint} - ${selectedCoin.name}`;
             document.getElementById('predictive-dropdown').classList.add('hidden');
 
-            // Render Info Card details
             document.getElementById('target-coin-name').innerText = selectedCoin.name;
             document.getElementById('target-coin-year').innerText = selectedCoin.year;
             document.getElementById('target-coin-mint').innerText = selectedCoin.mint;
@@ -237,15 +245,18 @@
         }
 
         function calculateAppraisal() {
-            let total = selectedCoin ? selectedCoin.baseValue : 0.25;
+            let total = selectedCoin ? selectedCoin.baseValue : 0.00;
             if (selectedCoin) {
                 selectedCoin.errors.forEach(err => {
                     if (activeErrors[err.id]) {
                         total += activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
                     }
                 });
+                if (activeGrade === 'MS') total += 2.50; 
+            } else {
+                document.getElementById('display-value').innerText = "$0.00";
+                return;
             }
-            if (activeGrade === 'MS' && selectedCoin) total += 2.50; // Condition bump
             document.getElementById('display-value').innerText = `$${total.toFixed(2)}`;
         }
 
@@ -303,7 +314,7 @@
                         <div class="text-xs font-bold text-gray-200">${item.name}</div>
                         <div class="text-xs font-black text-blue-400">$${item.value.toFixed(2)}</div>
                     </div>
-                    <div class="text-[10px] text-gray-500 mt-0.5">Grade Context: ${item.grade} | logged: ${item.date}</div>
+                    <div class="text-[10px] text-gray-500 mt-0.5">Grade Context: ${item.grade} | Logged: ${item.date}</div>
                     ${item.errors.length ? `<div class="text-[10px] text-amber-500 font-semibold mt-1">Multipliers: ${item.errors.join(', ')}</div>` : ''}
                     ${item.notes ? `<div class="text-[10px] text-gray-400 italic mt-1.5 bg-[#0b0f17] p-2 rounded border border-gray-900">${item.notes}</div>` : ''}
                 </div>
@@ -318,7 +329,6 @@
             }
         }
 
-        // Collapse dropdown if clicking outside search block
         document.addEventListener('click', function(e) {
             if (!e.target.closest('#search-input')) {
                 document.getElementById('predictive-dropdown').classList.add('hidden');
