@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,7 +44,6 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Year</label>
                 <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                    <!-- Dynamic generation via JavaScript -->
                 </select>
             </div>
             <div>
@@ -92,10 +90,15 @@
         </div>
     </div>
 
+    <!-- Status & Error Output Panel -->
+    <div id="status-card" class="bg-[#221616] rounded-xl p-4 mb-4 border border-red-500/30 hidden">
+        <p id="status-content" class="text-xs text-red-400 font-medium"></p>
+    </div>
+
     <!-- Defect Multiplier Diagnostic Output -->
     <div id="multiplier-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg hidden">
         <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Target Defect Anomalies & Varieties</h4>
-        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">Scanning definitions...</p>
+        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line"></p>
     </div>
 
     <!-- Metric Display Panels -->
@@ -129,16 +132,14 @@
     </script>
 
     <script>
-        // Populate custom years dynamically into container
         window.addEventListener('DOMContentLoaded', () => {
             const yearSelect = document.getElementById('year-select');
-            const currentYear = 2026;
             let optionsStr = '';
-            for(let y = currentYear; y >= 1800; y--) {
+            for(let y = 2026; y >= 1800; y--) {
                 optionsStr += `<option value="${y}">${y}</option>`;
             }
             yearSelect.innerHTML = optionsStr;
-            yearSelect.value = "1981";
+            yearSelect.value = "1898";
         });
 
         function updateGradeLabel(val) {
@@ -161,9 +162,21 @@
             };
         }
 
+        function showError(msg) {
+            const card = document.getElementById('status-card');
+            const content = document.getElementById('status-content');
+            if (msg) {
+                content.innerText = msg;
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+
         async function fetchMultipliers() {
+            showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { alert("Please enter your API key."); return; }
+            if (!apiKey) { showError("Please enter your API key first."); return; }
 
             const config = getCompiledSelection();
             const multiplierBtn = document.getElementById('multiplier-btn');
@@ -171,30 +184,30 @@
             const targetText = document.getElementById('multiplier-content');
 
             multiplierBtn.disabled = true;
-            multiplierBtn.innerText = "Scanning...";
+            multiplierBtn.innerText = "...";
             targetDisplay.classList.remove('hidden');
-            targetText.innerText = "Querying modern historical anomalies database...";
+            targetText.innerText = "Querying varieties database...";
 
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
                 const response = await ai.models.generateContent({
                     model: "gemini-3.5-flash",
-                    contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a highly precise bulleted list for a coin roll hunter highlighting errors to match lookups.`
+                    contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`
                 });
-
                 targetText.innerText = response.text;
             } catch (error) {
-                console.error("Multiplier Diagnostic Error:", error);
-                targetText.innerText = "Error pulling variety analysis data.";
-            } finally {
+                console.error(error);
+                showError("Failed to fetch varieties. Check your API key parameters.");
+            } {
                 multiplierBtn.disabled = false;
                 multiplierBtn.innerText = "Multipliers";
             }
         }
 
         async function executeSearch() {
+            showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { alert("Please enter your API key."); return; }
+            if (!apiKey) { showError("Please enter your API key first."); return; }
 
             const config = getCompiledSelection();
             const searchBtn = document.getElementById('search-btn');
@@ -204,10 +217,9 @@
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
 
-                // Schema now strictly requests precise mintage volume and location details
                 const response = await ai.models.generateContent({
                     model: "gemini-3.5-flash",
-                    contents: `Analyze coin specification parameters: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Custom Scale Grade Status: ${config.grade} out of 10 (where 0 is completely bad/worn smooth and 10 represents standard collector Choice Very Fine attributes). Output JSON data tracking exactly this schema layout format: {"name": "Precise Coin Metadata Title String", "price": 0.00, "mintage_location": "Facility Name String", "mintage_count": "Total Number String or Unknown"}`,
+                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Grade: ${config.grade}/10 (where 0 is completely bad/worn smooth and 10 is Choice Very Fine attributes). Output JSON format only: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`,
                     config: { responseMimeType: "application/json" }
                 });
 
@@ -215,11 +227,14 @@
                 document.getElementById('target-coin-name').innerText = data.name;
                 document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
                 document.getElementById('display-mintage').innerText = data.mintage_count || "Unknown";
-                document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
+                
+                const finalPrice = typeof data.price === 'number' ? data.price : parseFloat(data.price) || 0.00;
+                document.getElementById('display-value').innerText = `$${finalPrice.toFixed(2)}`;
+                
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
-                console.error("AI Evaluation Engine Error:", error);
-                alert("AI Error. Ensure your configuration values run cleanly.");
+                console.error(error);
+                showError("Evaluation failed. Make sure your network connection is stable.");
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerText = "Query Live AI";
