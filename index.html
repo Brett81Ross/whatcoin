@@ -11,7 +11,7 @@
 
     <div class="text-center my-6 border-b border-gray-900 pb-4">
         <h1 class="text-3xl font-extrabold tracking-tight text-white">WhatCoin™</h1>
-        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite</p>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite v2.2</p>
     </div>
 
     <!-- API Credentials Container -->
@@ -92,7 +92,7 @@
 
     <!-- Status & Error Output Panel -->
     <div id="status-card" class="bg-[#221616] rounded-xl p-4 mb-4 border border-red-500/30 hidden">
-        <p id="status-content" class="text-xs text-red-400 font-medium"></p>
+        <p id="status-content" class="text-xs text-red-400 font-medium font-mono whitespace-pre-wrap"></p>
     </div>
 
     <!-- Defect Multiplier Diagnostic Output -->
@@ -142,7 +142,7 @@
                 optionsStr += `<option value="${y}">${y}</option>`;
             }
             yearSelect.innerHTML = optionsStr;
-            yearSelect.value = "1960";
+            yearSelect.value = "1976";
         });
 
         function updateGradeLabel(val) {
@@ -170,6 +170,7 @@
             };
         }
 
+        // Updated error diagnostic view
         function showError(msg) {
             const card = document.getElementById('status-card');
             const content = document.getElementById('status-content');
@@ -184,7 +185,7 @@
         async function fetchMultipliers() {
             showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { showError("Please enter your API key first."); return; }
+            if (!apiKey) { showError("Error: Please enter your Gemini API key first."); return; }
 
             activeMultiplierId++;
             const currentId = activeMultiplierId;
@@ -202,7 +203,7 @@
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
                 const response = await ai.models.generateContent({
-                    model: "gemini-3.5-flash",
+                    model: "gemini-2.5-flash",
                     contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`
                 });
                 
@@ -211,7 +212,7 @@
             } catch (error) {
                 console.error(error);
                 if (currentId === activeMultiplierId) {
-                    showError("Failed to fetch varieties. Check your API key parameters.");
+                    showError(`API Error: ${error.message || error}`);
                 }
             } finally {
                 if (currentId === activeMultiplierId) {
@@ -224,7 +225,7 @@
         async function executeSearch() {
             showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { showError("Please enter your API key first."); return; }
+            if (!apiKey) { showError("Error: Please enter your Gemini API key first."); return; }
 
             activeSearchId++;
             const currentId = activeSearchId;
@@ -244,20 +245,29 @@
                 else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
                 else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
 
+                // Leverage strict schema configuration to guarantee structured data
                 const response = await ai.models.generateContent({
-                    model: "gemini-3.5-flash",
-                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation} on the standard 1-70 Sheldon scale. Output raw JSON data only matching exactly this schema format: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`
+                    model: "gemini-2.5-flash",
+                    contents: `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}.`,
+                    config: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING" },
+                                price: { type: "NUMBER" },
+                                mintage_location: { type: "STRING" },
+                                mintage_count: { type: "STRING" }
+                            },
+                            required: ["name", "price", "mintage_location", "mintage_count"]
+                        }
+                    }
                 });
 
                 if (currentId !== activeSearchId) return;
 
-                // Robust regex block match to extract JSON even if conversational text surrounds it
-                const match = response.text.match(/\{[\s\S]*\}/);
-                if (!match) {
-                    throw new Error("No valid JSON structure found in response.");
-                }
+                const data = JSON.parse(response.text.trim());
                 
-                const data = JSON.parse(match[0]);
                 document.getElementById('target-coin-name').innerText = data.name;
                 document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
                 document.getElementById('display-mintage').innerText = data.mintage_count || "Unknown";
@@ -269,7 +279,7 @@
             } catch (error) {
                 console.error(error);
                 if (currentId === activeSearchId) {
-                    showError("Evaluation parsing failed. Try clicking Query Live AI again.");
+                    showError(`Engine Error: ${error.message || error}`);
                 }
             } finally {
                 if (currentId === activeSearchId) {
