@@ -76,7 +76,8 @@
                 return;
             }
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+            // Updated to use gemini-2.0-flash
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             const prompt = `Analyze market value for a ${document.getElementById('year-select').value} ${document.getElementById('denom-select').value} coin. Return only the numerical value as a dollar amount (e.g., 5.00).`;
 
             try {
