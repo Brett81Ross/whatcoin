@@ -6,48 +6,56 @@
     <title>WhatCoin™ - Numismatic Matrix Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Gold/Green inspired theme */
         body { 
-            background: radial-gradient(circle at top, #0f170f, #000000); 
+            background-color: #050505; 
             min-height: 100vh; 
             color: #d1d5db; 
         }
         .glass-panel { 
-            background: rgba(10, 15, 10, 0.8); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(184, 153, 68, 0.2); 
+            background: #0a0a0a; 
+            border: 1px solid #1a1a1a; 
         }
         select, input { 
-            background-color: #050505 !important; 
+            background-color: #000 !important; 
             color: #fff !important; 
-            border-color: rgba(184, 153, 68, 0.3) !important;
+            border: 1px solid #222 !important;
         }
-        
-        @keyframes pulse-gold {
-            0%, 100% { box-shadow: 0 0 15px rgba(184, 153, 68, 0.2); }
-            50% { box-shadow: 0 0 30px rgba(184, 153, 68, 0.4); }
+        /* Logo containment to hide its internal black background */
+        .logo-container {
+            width: 160px;
+            height: 160px;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 0 auto 1.5rem auto;
+            background: #000;
         }
-        .animate-pulse-gold { animation: pulse-gold 2s infinite ease-in-out; }
+        .logo-img {
+            width: 140%;
+            height: 140%;
+            object-fit: cover;
+            margin: -20% 0 0 -20%;
+        }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center font-sans antialiased">
 
-    <div class="text-center my-8">
-        <!-- Logo updated to remove border and fit cleanly -->
-        <img src="logo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="w-48 h-48 mx-auto object-contain mb-4">
-        <h1 class="text-3xl font-black tracking-tighter text-white">WhatCoin™</h1>
-        <p class="text-[10px] uppercase tracking-[0.2em] text-[#b89944] mt-1">Numismatic Matrix Lab</p>
+    <div class="text-center my-6">
+        <div class="logo-container shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+            <img src="logo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="logo-img">
+        </div>
+        <h1 class="text-2xl font-black tracking-tight text-white">WhatCoin™</h1>
+        <p class="text-[9px] uppercase tracking-[0.3em] text-[#888] mt-1">Numismatic Matrix Lab</p>
     </div>
 
     <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl space-y-4">
         <div>
-            <label class="text-[9px] font-black text-[#b89944] uppercase tracking-widest ml-1">Year</label>
-            <select id="year-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner border"></select>
+            <label class="text-[9px] font-bold text-[#555] uppercase tracking-widest ml-1">Year</label>
+            <select id="year-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner"></select>
         </div>
 
         <div>
-            <label class="text-[9px] font-black text-[#b89944] uppercase tracking-widest ml-1">Denomination</label>
-            <select id="denom-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner border">
+            <label class="text-[9px] font-bold text-[#555] uppercase tracking-widest ml-1">Denomination</label>
+            <select id="denom-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>Roosevelt Dime (1946-Present) (Modern 10¢)</option>
                 <option>Mercury Dime (1916-1945) (Vintage 10¢)</option>
                 <option>Barber Dime (1892-1916) (Antique 10¢)</option>
@@ -65,8 +73,8 @@
         </div>
 
         <div>
-            <label class="text-[9px] font-black text-[#b89944] uppercase tracking-widest ml-1">Condition / Toning / Variety</label>
-            <select id="condition-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner border">
+            <label class="text-[9px] font-bold text-[#555] uppercase tracking-widest ml-1">Condition / Toning / Variety</label>
+            <select id="condition-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>Natural (Untoned)</option>
                 <option>Bag Toning</option>
                 <option>Rainbow Toning</option>
@@ -83,30 +91,30 @@
         </div>
 
         <div>
-            <label class="text-[9px] font-black text-[#b89944] uppercase tracking-widest ml-1">Mint Mark</label>
-            <select id="mint-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner border">
+            <label class="text-[9px] font-bold text-[#555] uppercase tracking-widest ml-1">Mint Mark</label>
+            <select id="mint-select" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>None (Philadelphia)</option><option>P</option><option>D</option><option>S</option>
                 <option>W</option><option>O</option><option>CC</option><option>C</option>
             </select>
         </div>
 
         <div>
-            <label class="text-[9px] font-black text-[#b89944] uppercase tracking-widest ml-1">Visual Evidence</label>
-            <input type="file" accept="image/*" capture="environment" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner border file:bg-[#103010] file:text-[#00ff00] file:border-0 file:rounded-lg file:px-3 file:py-1 cursor-pointer">
+            <label class="text-[9px] font-bold text-[#555] uppercase tracking-widest ml-1">Visual Evidence</label>
+            <input type="file" accept="image/*" capture="environment" class="w-full mt-1.5 rounded-xl p-4 text-sm font-bold shadow-inner file:bg-[#1a1a1a] file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1 cursor-pointer">
         </div>
 
-        <button onclick="runQuery()" id="query-btn" class="w-full bg-gradient-to-r from-[#103010] to-[#0a200a] border border-[#b89944] text-[#b89944] font-black py-4 rounded-xl text-sm uppercase tracking-widest transition-all animate-pulse-gold">
+        <button onclick="runQuery()" id="query-btn" class="w-full bg-white text-black font-black py-4 rounded-xl text-sm uppercase tracking-widest transition-all">
             QUERY MARKET VALUATION
         </button>
 
-        <div class="pt-4 mt-4 border-t border-[#b89944]/20">
-            <label class="text-[9px] font-black text-gray-500 uppercase tracking-widest ml-1">Gemini API Key</label>
-            <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 rounded-xl p-4 text-sm font-mono shadow-inner border">
+        <div class="pt-4 mt-4 border-t border-[#1a1a1a]">
+            <label class="text-[9px] font-bold text-[#333] uppercase tracking-widest ml-1">Gemini API Key</label>
+            <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 rounded-xl p-4 text-sm font-mono shadow-inner">
         </div>
 
-        <div id="result-display" class="hidden mt-6 p-4 border border-[#b89944]/50 bg-[#0a0a05]/50 rounded-xl text-center">
-            <p class="text-[9px] font-black text-[#b89944] uppercase tracking-widest mb-1">Estimated Market Valuation</p>
-            <div id="valuation-text" class="text-lg font-black text-white tracking-tight"></div>
+        <div id="result-display" class="hidden mt-6 p-4 border border-[#222] bg-[#050505] rounded-xl text-center">
+            <p class="text-[9px] font-black text-[#555] uppercase tracking-widest mb-1">Estimated Market Valuation</p>
+            <div id="valuation-text" class="text-lg font-bold text-white tracking-tight"></div>
         </div>
     </div>
 
@@ -127,7 +135,6 @@
             if(!apiKey) { alert("Please enter your API key."); return; }
 
             btn.innerText = "ANALYZING...";
-            btn.classList.remove('animate-pulse-gold');
             btn.disabled = true;
             display.classList.add('hidden');
             
@@ -147,7 +154,7 @@
                 });
 
                 if (response.status === 429) {
-                    throw new Error("Server is busy. Please wait 10 seconds before your next analysis.");
+                    throw new Error("Server is busy. Please wait 10 seconds.");
                 }
 
                 if (!response.ok) {
@@ -155,14 +162,13 @@
                 }
 
                 const data = await response.json();
-                valText.innerText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No appraisal data returned.";
+                valText.innerText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No data.";
                 display.classList.remove('hidden');
             } catch (err) {
                 valText.innerText = err.message;
                 display.classList.remove('hidden');
             } finally {
                 btn.innerText = "QUERY MARKET VALUATION";
-                btn.classList.add('animate-pulse-gold');
                 btn.disabled = false;
             }
         }
