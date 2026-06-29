@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dope House Coins™ - Numismatic Matrix</title>
+    <title>Dope House Coin Labs™ - Autonomous Numismatic Suite</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #0b0f17; color: #f0f4f8; }
@@ -11,132 +11,12 @@
 </head>
 <body class="p-4 max-w-md mx-auto font-sans antialiased">
 
-    <!-- Brand Header & 1930s Cartoon Character Element inspired by file 1000037463.jpg -->
+    <!-- Brand Header updated to use dopehouselogo.png, inspired by 1000037467.png -->
     <div class="text-center my-4 border-b border-gray-900 pb-5 flex flex-col items-center">
-        <div class="w-full max-w-[340px] h-64 mb-2">
-            <!-- Vector Illustration replicating 1000037463.jpg character with Indian Head Penny modification -->
-            <svg viewBox="0 0 500 360" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                
-                <!-- ====== DOCKING/GROUND SHADOW LAYER ====== -->
-                <ellipse cx="260" cy="315" rx="160" ry="15" fill="#05070a" opacity="0.35" />
-
-                <!-- ====== CHARACTER 1: THE PLAYING CARD (RIGHT SIDE) ====== -->
-                <!-- Card Shadow -->
-                <rect x="235" y="75" width="135" height="185" rx="16" fill="#05070a" opacity="0.2" transform="rotate(8, 302, 167)" />
-                
-                <!-- Card Legs & Feet (Running Pose from 1000037463.jpg) -->
-                <path d="M 285 240 C 290 280, 330 280, 350 280" stroke="#000000" stroke-width="9" stroke-linecap="round" fill="none" />
-                <path d="M 315 240 C 310 270, 290 280, 275 295" stroke="#000000" stroke-width="9" stroke-linecap="round" fill="none" />
-                
-                <!-- Card Shoes (Vintage Red Booties) -->
-                <path d="M 345 285 C 360 285, 368 265, 362 255 C 355 248, 340 255, 335 268 Z" fill="#ff4d4d" stroke="#000000" stroke-width="5" />
-                <path d="M 255 295 C 255 310, 275 315, 280 300 C 285 285, 265 280, 255 295 Z" fill="#ff4d4d" stroke="#000000" stroke-width="5" />
-
-                <!-- Card Body -->
-                <rect x="230" y="70" width="135" height="185" rx="16" fill="#f4f0e6" stroke="#000000" stroke-width="7" transform="rotate(8, 297, 162)" />
-
-                <!-- Card Indices (3 of Diamonds Layout) -->
-                <g transform="translate(252, 95) rotate(8)" font-family="'Impact', 'Arial Black', sans-serif" font-size="18" fill="#ff4d4d" text-anchor="middle">
-                    <text x="0" y="0">3</text>
-                    <path d="M 0 6 L 6 12 L 0 18 L -6 12 Z" />
-                </g>
-                <g transform="translate(342, 230) rotate(188)" font-family="'Impact', 'Arial Black', sans-serif" font-size="18" fill="#ff4d4d" text-anchor="middle">
-                    <text x="0" y="0">3</text>
-                    <path d="M 0 6 L 6 12 L 0 18 L -6 12 Z" />
-                </g>
-                <!-- Center Diamond pip tracker -->
-                <path d="M 298 155 L 305 165 L 298 175 L 291 165 Z" fill="#ff4d4d" transform="rotate(8, 298, 165)" />
-
-                <!-- Card Eyes & Wide Rubber Hose Smile -->
-                <g transform="rotate(8, 297, 162)">
-                    <ellipse cx="275" cy="145" rx="10" ry="18" fill="#000000" />
-                    <polygon points="276,138 284,142 276,147" fill="#f4f0e6" />
-                    <ellipse cx="310" cy="143" rx="10" ry="18" fill="#000000" />
-                    <polygon points="311,136 319,140 311,145" fill="#f4f0e6" />
-                    <!-- Mouth -->
-                    <path d="M 265 178 Q 295 210, 325 172" fill="#ffffff" stroke="#000000" stroke-width="5" stroke-linecap="round" />
-                    <path d="M 275 184 L 282 197 M 290 187 L 296 201 M 305 185 L 309 198" stroke="#000000" stroke-width="3" />
-                    <path d="M 292 161 Q 295 157, 298 161" stroke="#000000" stroke-width="4" stroke-linecap="round" fill="none" />
-                </g>
-
-                <!-- Card Right Arm holding Money Bag -->
-                <path d="M 360 165 C 390 160, 400 135, 410 120" stroke="#000000" stroke-width="8" stroke-linecap="round" fill="none" />
-                <circle cx="412" cy="116" r="10" fill="#ffffff" stroke="#000000" stroke-width="5" />
-                <!-- Loot Bag Attachment -->
-                <g transform="translate(395, 50)">
-                    <circle cx="30" cy="45" r="20" fill="#eab308" stroke="#000000" stroke-width="5" />
-                    <path d="M 15 25 C 15 15, 25 12, 30 18 C 35 12, 45 15, 45 25 Z" fill="#eab308" stroke="#000000" stroke-width="5" />
-                    <rect x="17" y="24" width="26" height="5" rx="2" fill="#ff4d4d" stroke="#000000" stroke-width="3" />
-                    <text x="30" y="52" font-family="'Arial Black', sans-serif" font-size="18" font-weight="900" fill="#000000" text-anchor="middle">$</text>
-                </g>
-
-
-                <!-- ====== CHARACTER 2: VINTAGE INDIAN HEAD PENNY (LEFT SIDE) ====== -->
-                <!-- Indian Head Feather Plume Array (Emerging behind the coin edge) -->
-                <g stroke="#000000" stroke-width="5" stroke-linejoin="round">
-                    <!-- Fan of stylized 1930s cartoon feathers pointing backward/upward -->
-                    <path d="M 100 120 C 70 80, 50 110, 85 135 Z" fill="#ff4d4d" />
-                    <path d="M 90 100 C 55 55, 40 85, 80 115 Z" fill="#ffffff" />
-                    <path d="M 95 85 C 65 35, 55 60, 90 95 Z" fill="#facc15" />
-                    <path d="M 115 70 C 95 15, 80 35, 110 80 Z" fill="#ff4d4d" />
-                    <path d="M 140 65 C 130 10, 115 25, 135 75 Z" fill="#ffffff" />
-                    <path d="M 165 70 C 165 15, 150 20, 155 80 Z" fill="#facc15" />
-                </g>
-                <!-- Headdress Headband base wrapper overlay -->
-                <path d="M 85 130 C 85 90, 150 70, 175 82" stroke="#000000" stroke-width="6" fill="none" stroke-linecap="round" />
-                <circle cx="95" cy="125" r="6" fill="#eab308" stroke="#000000" stroke-width="3" />
-                <circle cx="120" cy="100" r="5" fill="#ff4d4d" stroke="#000000" stroke-width="3" />
-                <circle cx="150" cy="85" r="5" fill="#ffffff" stroke="#000000" stroke-width="3" />
-
-                <!-- Penny Legs (Running Action Pose) -->
-                <path d="M 140 235 C 130 270, 105 275, 115 295" stroke="#000000" stroke-width="9" stroke-linecap="round" fill="none" />
-                <path d="M 175 235 C 190 265, 215 270, 230 290" stroke="#000000" stroke-width="9" stroke-linecap="round" fill="none" />
-                
-                <!-- Penny Shoes (Vintage Yellow Booties) -->
-                <path d="M 95 295 C 95 315, 120 315, 125 300 C 130 285, 110 280, 95 295 Z" fill="#eab308" stroke="#000000" stroke-width="5" />
-                <path d="M 225 290 C 240 295, 250 280, 242 270 C 235 260, 220 270, 225 290 Z" fill="#eab308" stroke="#000000" stroke-width="5" />
-
-                <!-- MAIN COPPER COIN DISK (Replacing original red casino chip) -->
-                <circle cx="155" cy="170" r="65" fill="#b45309" stroke="#000000" stroke-width="7" />
-                <!-- Inner Rim Die Field line -->
-                <circle cx="155" cy="170" r="57" fill="#d97706" stroke="#000000" stroke-width="4" />
-
-                <!-- Left Arm Juggling Coins -->
-                <path d="M 100 190 C 65 195, 55 170, 45 155" stroke="#000000" stroke-width="8" stroke-linecap="round" fill="none" />
-                <path d="M 45 155 C 35 145, 22 135, 20 145 C 18 155, 32 165, 42 170" fill="#ffffff" stroke="#000000" stroke-width="5" stroke-linejoin="round" />
-                <!-- Juggled Gold Coins Stream -->
-                <ellipse cx="36" cy="100" rx="14" ry="6" fill="#facc15" stroke="#000000" stroke-width="4" />
-                <ellipse cx="38" cy="84" rx="14" ry="6" fill="#facc15" stroke="#000000" stroke-width="4" />
-                <ellipse cx="45" cy="68" rx="14" ry="6" fill="#facc15" stroke="#000000" stroke-width="4" />
-
-                <!-- Indian Head Penny Character Facial Features -->
-                <ellipse cx="140" cy="155" rx="9" ry="16" fill="#000000" />
-                <polygon points="138,148 146,152 138,156" fill="#d97706" />
-                <ellipse cx="180" cy="153" rx="9" ry="16" fill="#000000" />
-                <polygon points="178,146 186,150 178,154" fill="#d97706" />
-                
-                <!-- Classic Open-Mouth Smile from original 1000037463.jpg -->
-                <path d="M 142 188 C 142 210, 185 210, 185 188 Z" fill="#451a03" stroke="#000000" stroke-width="5" stroke-linejoin="round" />
-                <path d="M 152 200 Q 165 206, 178 198" fill="#ff4d4d" stroke="#000000" stroke-width="3" fill-opacity="0.9" />
-                <!-- Cheek Dimples -->
-                <path d="M 136 186 Q 140 180, 144 186" stroke="#000000" stroke-width="4" fill="none" />
-                <path d="M 188 184 Q 184 178, 182 184" stroke="#000000" fill="none" stroke-width="4" />
-                <!-- Little Nose -->
-                <path d="M 158 168 Q 162 163, 166 168" stroke="#000000" stroke-width="4" fill="none" stroke-linecap="round" />
-
-                <!-- Liberty Text Ribbon / Inscription Markings inside the field -->
-                <text x="110" y="165" font-family="sans-serif" font-weight="900" font-size="8" fill="#78350f" transform="rotate(-75, 110, 165)">LIBERTY</text>
-                <text x="155" y="216" font-family="sans-serif" font-weight="900" font-size="9" fill="#78350f" text-anchor="middle">1909</text>
-
-                <!-- ====== VINTAGE BRANDING CURVED SCROLL BANNER ====== -->
-                <path d="M 60 275 Q 200 325, 340 265" fill="none" id="banner-text-path" />
-                <!-- Banner Text to match the style context -->
-                <text font-family="'Impact', 'Arial Black', sans-serif" font-size="23" fill="#ffffff" stroke="#000000" stroke-width="5" paint-order="stroke fill" letter-spacing="2">
-                    <textPath href="#banner-text-path" startOffset="50%" text-anchor="middle">DOPE HOUSE COINS™</textPath>
-                </text>
-            </svg>
+        <div class="w-full max-w-[340px] mb-4">
+            <img src="dopehouselogo.png" alt="Dope House Coin Labs Logo" class="w-full h-auto rounded-xl shadow-2xl border border-gray-800">
         </div>
-        <h1 class="text-3xl font-black tracking-tight text-white uppercase font-mono">Dope House Coins<span class="text-xs text-amber-500 align-super font-bold">™</span></h1>
+        <h1 class="text-2xl font-black tracking-tight text-white uppercase font-mono">Dope House Coin Labs<span class="text-xs text-amber-500 align-super font-bold">™</span></h1>
         <p class="text-xs text-amber-400 mt-1 uppercase tracking-widest font-semibold">Autonomous Valuation Engine & Verification Suite</p>
     </div>
 
@@ -199,89 +79,62 @@
             </select>
         </div>
 
-        <!-- 5. Advanced Material Properties Dropdowns -->
+        <!-- 5. Advanced Material Properties -->
         <div class="border-t border-gray-800 pt-3 space-y-3">
             <label class="block text-xs font-bold uppercase tracking-wider text-blue-400">Advanced Material Properties</label>
-            
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Striking/Die State</label>
                     <select id="strike-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
                         <option value="Standard Strike">Standard Strike</option>
-                        <option value="Broadstrike Error (Struck without collar, design spread outward)">Broadstrike Error</option>
-                        <option value="Cud Error (Raised area from broken chunk falling out of die)">Cud Die Error</option>
+                        <option value="Broadstrike Error">Broadstrike Error</option>
+                        <option value="Cud Error">Cud Die Error</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Surface Alteration</label>
                     <select id="surface-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
                         <option value="Original Surfaces">Original Surfaces</option>
-                        <option value="Bag Marks Present (Abrasions from contact in mint bags)">Bag Marks Present</option>
-                        <option value="Whizzing Alteration (Polished/Mechanically brushed surface - Body Bag hazard)">Whizzed / Cleaned (Altered)</option>
-                        <option value="Cull Piece (Heavily worn/damaged representative coin)">Cull / Heavily Damaged</option>
+                        <option value="Bag Marks Present">Bag Marks Present</option>
+                        <option value="Whizzed / Cleaned (Altered)">Whizzed / Cleaned (Altered)</option>
+                        <option value="Cull / Heavily Damaged">Cull / Heavily Damaged</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Condition Grade Map Input -->
+        <!-- Condition Grade -->
         <div>
             <div class="flex justify-between items-center mb-1">
                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Condition Numeric Grade</label>
-                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">MS-63 (Choice Uncirculated)</span>
+                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">MS-63</span>
             </div>
-            <input 
-                id="grade-slider" 
-                type="range" 
-                min="1" 
-                max="70" 
-                value="63" 
-                class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]"
-                oninput="updateGradeLabel(this.value)"
-            >
+            <input id="grade-slider" type="range" min="1" max="70" value="63" class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]" oninput="updateGradeLabel(this.value)">
         </div>
 
-        <!-- Action Matrix -->
         <div class="grid grid-cols-5 gap-2 pt-2">
-            <button id="multiplier-btn" onclick="fetchMultipliers()" class="col-span-2 bg-[#1b253b] hover:bg-[#23304d] text-amber-400 border border-amber-500/30 font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">
-                Multipliers
-            </button>
-            <button id="search-btn" onclick="executeSearch()" class="col-span-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">
-                Query Live AI
-            </button>
+            <button id="multiplier-btn" onclick="fetchMultipliers()" class="col-span-2 bg-[#1b253b] hover:bg-[#23304d] text-amber-400 border border-amber-500/30 font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">Multipliers</button>
+            <button id="search-btn" onclick="executeSearch()" class="col-span-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">Query Live AI</button>
         </div>
     </div>
 
-    <!-- Status & Error Output Panel -->
+    <!-- Output Panels -->
     <div id="status-card" class="bg-[#221616] rounded-xl p-4 mb-4 border border-red-500/30 hidden">
-        <p id="status-content" class="text-xs text-red-400 font-medium font-mono whitespace-pre-wrap"></p>
+        <p id="status-content" class="text-xs text-red-400 font-medium font-mono"></p>
     </div>
 
-    <!-- Defect Multiplier Diagnostic Output -->
     <div id="multiplier-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg hidden">
         <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Target Defect Anomalies & Varieties</h4>
-        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line"></p>
+        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed"></p>
     </div>
 
-    <!-- Metric Display Panels -->
     <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden space-y-2">
         <div>
             <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Coin Specification</label>
             <h3 id="target-coin-name" class="text-base font-bold text-white">---</h3>
         </div>
-        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-800">
-            <div>
-                <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Mintage Location</label>
-                <div id="display-location" class="text-xs font-semibold text-blue-400">---</div>
-            </div>
-            <div>
-                <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Total Mintage</label>
-                <div id="display-mintage" class="text-xs font-semibold text-blue-400">---</div>
-            </div>
-        </div>
     </div>
 
-    <!-- Live Appraisal Valuation Panel -->
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center shadow-inner">
         <div id="display-value" class="text-5xl font-black text-white">$0.00</div>
     </div>
@@ -300,30 +153,15 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const yearSelect = document.getElementById('year-select');
-            let optionsStr = '';
             for(let y = 2026; y >= 1800; y--) {
-                optionsStr += `<option value="${y}">${y}</option>`;
+                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
             }
-            yearSelect.innerHTML = optionsStr;
             yearSelect.value = "1972";
-            document.getElementById('mint-select').value = "S (San Francisco)";
         });
 
         function updateGradeLabel(val) {
             const badge = document.getElementById('grade-badge');
-            const num = parseInt(val);
-            let label = "Circulated";
-            
-            if (num >= 65) label = `MS-${num} (Gem Uncirculated)`;
-            else if (num >= 60) label = `MS-${num} (Uncirculated)`;
-            else if (num >= 50) label = `AU-${num} (About Uncirculated)`;
-            else if (num >= 40) label = `EF-${num} (Extremely Fine)`;
-            else if (num >= 20) label = `VF-${num} (Very Fine)`;
-            else if (num >= 12) label = `F-${num} (Fine)`;
-            else if (num >= 4) label = `G-${num} (Good)`;
-            else label = `PO-${num} (Poor)`;
-            
-            badge.innerText = label;
+            badge.innerText = `MS-${val}`;
         }
 
         function getCompiledSelection() {
@@ -338,180 +176,55 @@
             };
         }
 
-        function showError(msg) {
-            const card = document.getElementById('status-card');
-            const content = document.getElementById('status-content');
-            if (msg) {
-                content.innerText = msg;
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        }
-
-        async function fetchDirectRestFallback(apiKey, prompt, schemaConfig = null) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }]
-            };
-
-            if (schemaConfig) {
-                payload.generationConfig = {
-                    responseMimeType: "application/json",
-                    responseSchema: schemaConfig
-                };
-            }
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.error?.message || `HTTP Request failed with status code ${response.status}`);
-            }
-
-            const resData = await response.json();
-            return resData.candidates[0].content.parts[0].text;
-        }
-
         async function fetchMultipliers() {
-            showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { showError("Error: Please enter your Gemini API key first."); return; }
-
-            activeMultiplierId++;
-            const currentId = activeMultiplierId;
-
+            if (!apiKey) return;
             const config = getCompiledSelection();
-            const multiplierBtn = document.getElementById('multiplier-btn');
-            const targetDisplay = document.getElementById('multiplier-card');
             const targetText = document.getElementById('multiplier-content');
-
-            multiplierBtn.disabled = true;
-            multiplierBtn.innerText = "...";
-            targetDisplay.classList.remove('hidden');
-            targetText.innerText = "Querying varieties and toning factors database...";
-
-            const promptText = `Identify well-known varieties, key dates, errors, and physical defect multipliers for a ${config.year} ${config.mint} ${config.denomination} as monitored by the Dope House Coins internal database. 
-            Surface Toning: ${config.tone}. 
-            Striking Profile: ${config.strike}. 
-            Surface Features: ${config.surface}. 
-            Provide a clean bulleted explanation breaking down how these expert factors modify the overall valuation baseline.`;
+            document.getElementById('multiplier-card').classList.remove('hidden');
+            targetText.innerText = "Querying...";
+            
+            const promptText = `Identify varieties, key dates, errors, and physical defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Surface Toning: ${config.tone}. Striking Profile: ${config.strike}. Surface Features: ${config.surface}. Provide a clean bulleted explanation.`;
 
             try {
-                let textResult = "";
-                try {
-                    const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                    const response = await ai.models.generateContent({
-                        model: "gemini-2.5-flash",
-                        contents: promptText
-                    });
-                    textResult = response.text;
-                } catch (sdkError) {
-                    console.warn("SDK layer rejected key scheme. Activating REST architecture fallback...", sdkError);
-                    textResult = await fetchDirectRestFallback(apiKey, promptText);
-                }
-                
-                if (currentId !== activeMultiplierId) return;
-                targetText.innerText = textResult;
+                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: promptText });
+                targetText.innerText = response.text;
             } catch (error) {
-                console.error(error);
-                if (currentId === activeMultiplierId) {
-                    showError(`Authentication/API Error: ${error.message || error}`);
-                }
-            } finally {
-                if (currentId === activeMultiplierId) {
-                    multiplierBtn.disabled = false;
-                    multiplierBtn.innerText = "Multipliers";
-                }
+                targetText.innerText = "Error fetching data.";
             }
         }
 
         async function executeSearch() {
-            showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) { showError("Error: Please enter your Gemini API key first."); return; }
-
-            activeSearchId++;
-            const currentId = activeSearchId;
-
+            if (!apiKey) return;
             const config = getCompiledSelection();
-            const searchBtn = document.getElementById('search-btn');
-            searchBtn.disabled = true;
-            searchBtn.innerText = "Analyzing...";
-
-            let sheldonNotation = `Grade ${config.grade}/70`;
-            const numGrade = parseInt(config.grade);
-            if (numGrade >= 60) sheldonNotation = `Mint State Uncirculated MS-${numGrade}`;
-            else if (numGrade >= 50) sheldonNotation = `About Uncirculated AU-${numGrade}`;
-            else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
-            else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
-
-            const promptText = `Analyze standard market transaction values for this configuration on behalf of the Dope House Coins platform: 
-            Denomination: ${config.denomination}, 
-            Year: ${config.year}, 
-            Mint Mark: ${config.mint}, 
-            Condition: ${sheldonNotation}, 
-            Toning Profile: ${config.tone}, 
-            Strike Variations: ${config.strike}, 
-            Surface Profile: ${config.surface}. 
-            Calculate strict pricing adjustments based on the parameters (e.g., provide high premiums for genuine errors or exquisite natural toning; apply dramatic value reductions, zero-out, or label as a potential ungradable slab reject if 'Whizzing' or 'Artificial Toning' modifications are highlighted).`;
+            const promptText = `Analyze market transaction values for: ${config.year} ${config.mint} ${config.denomination}, Grade ${config.grade}/70. Toning: ${config.tone}.`;
             
-            const strictSchema = {
-                type: "OBJECT",
-                properties: {
-                    name: { type: "STRING" },
-                    price: { type: "NUMBER" },
-                    mintage_location: { type: "STRING" },
-                    mintage_count: { type: "STRING" }
-                },
-                required: ["name", "price", "mintage_location", "mintage_count"]
-            };
-
             try {
-                let rawJsonText = "";
-                try {
-                    const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                    const response = await ai.models.generateContent({
-                        model: "gemini-2.5-flash",
-                        contents: promptText,
-                        config: {
-                            responseMimeType: "application/json",
-                            responseSchema: strictSchema
+                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                const response = await ai.models.generateContent({
+                    model: "gemini-2.5-flash",
+                    contents: promptText,
+                    config: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                name: { type: "STRING" },
+                                price: { type: "NUMBER" }
+                            },
+                            required: ["name", "price"]
                         }
-                    });
-                    rawJsonText = response.text;
-                } catch (sdkError) {
-                    console.warn("SDK initialization bypass. Transitioning directly to target endpoint...", sdkError);
-                    rawJsonText = await fetchDirectRestFallback(apiKey, promptText, strictSchema);
-                }
-
-                if (currentId !== activeSearchId) return;
-
-                const data = JSON.parse(rawJsonText.trim());
-                
+                    }
+                });
+                const data = JSON.parse(response.text);
                 document.getElementById('target-coin-name').innerText = data.name;
-                document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
-                document.getElementById('display-mintage').innerText = data.mintage_count || "Unknown";
-                
-                const finalPrice = typeof data.price === 'number' ? data.price : parseFloat(data.price) || 0.00;
-                document.getElementById('display-value').innerText = `$${finalPrice.toFixed(2)}`;
-                
+                document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
-                console.error(error);
-                if (currentId === activeSearchId) {
-                    showError(`Authentication/API Error: ${error.message || error}`);
-                }
-            } finally {
-                if (currentId === activeSearchId) {
-                    searchBtn.disabled = false;
-                    searchBtn.innerText = "Query Live AI";
-                }
+                document.getElementById('status-content').innerText = "API Error.";
+                document.getElementById('status-card').classList.remove('hidden');
             }
         }
     </script>
