@@ -48,20 +48,20 @@
             </select>
         </div>
 
-        <!-- 3. Tone (Updated with Red and Yellow Progression Spectrum) -->
+        <!-- 3. Tone (Refined per 1000037454_2.jpg and 1000037456_2.jpg specifications) -->
         <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Tone (Surface Toning)</label>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Tone & Surface Authentication</label>
             <select id="tone-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
                 <option value="Untoned / Blast White">Untoned ("Blast White")</option>
-                <option value="Desirable Toning (Vibrant Rainbow/Crescent/Target)">Desirable Toning (Rainbow/Crescent/Target)</option>
-                <option value="Desirable Toning (Gold/Yellow Tones)">Desirable Toning (Gold / Yellow Tones)</option>
-                <option value="Desirable Toning (Red/Magenta Tones)">Desirable Toning (Red / Magenta Tones)</option>
-                <option value="Undesirable Toning (Dark/Splotchy/Blackish)">Undesirable Toning (Dark/Splotchy/Damage)</option>
-                <option value="Artificial Toning (Crayon Colors/Film Residue)">Artificial Toning (Reject/Alteration)</option>
+                <option value="Natural Toning: Vibrant Rainbow/Crescent/Target (Settles in recesses, breaks gently around raised details)">Natural Toning: Rainbow/Crescent/Target</option>
+                <option value="Natural Toning: Gold/Yellow Tones (Chemical bonding over decades)">Natural Toning: Gold / Yellow Tones</option>
+                <option value="Natural Toning: Red/Magenta Tones (Retains color/depth under vertical halogen lighting)">Natural Toning: Red / Magenta Tones</option>
+                <option value="Undesirable Toning (Dark/Splotchy/Environmentally Damaged)">Undesirable Toning: Dark/Splotchy/Damage</option>
+                <option value="Artificial Toning: Altered Crayon Colors (Uniform bleeding, bullseye shapes, or floating surface film)">Artificial Toning: Counterfeit/Altered Colors (Reject)</option>
             </select>
         </div>
 
-        <!-- 4. Mint -->
+        <!-- 4. Mint Mark -->
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Mint Mark</label>
             <select id="mint-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
@@ -71,6 +71,31 @@
                 <option value="W (West Point)">W (West Point)</option>
                 <option value="No Mint Mark">No Mint Mark</option>
             </select>
+        </div>
+
+        <!-- 5. Numismatic Profiler Dropdowns (Derived from 1000037458.jpg and 1000037461.jpg metrics) -->
+        <div class="border-t border-gray-800 pt-3 space-y-3">
+            <label class="block text-xs font-bold uppercase tracking-wider text-blue-400">Advanced Material Properties</label>
+            
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Striking/Die State</label>
+                    <select id="strike-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                        <option value="Standard Strike">Standard Strike</option>
+                        <option value="Broadstrike Error (Struck without collar, design spread outward)">Broadstrike Error</option>
+                        <option value="Cud Error (Raised area from broken chunk falling out of die)">Cud Die Error</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Surface Alteration</label>
+                    <select id="surface-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                        <option value="Original Surfaces">Original Surfaces</option>
+                        <option value="Bag Marks Present (Abrasions from contact in mint bags)">Bag Marks Present</option>
+                        <option value="Whizzing Alteration (Polished/Mechanically brushed surface - Body Bag hazard)">Whizzed / Cleaned (Altered)</option>
+                        <option value="Cull Piece (Heavily worn/damaged representative coin)">Cull / Heavily Damaged</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <!-- Condition Grade Map Input -->
@@ -181,6 +206,8 @@
                 year: document.getElementById('year-select').value,
                 mint: document.getElementById('mint-select').value,
                 tone: document.getElementById('tone-select').value,
+                strike: document.getElementById('strike-select').value,
+                surface: document.getElementById('surface-select').value,
                 grade: document.getElementById('grade-slider').value
             };
         }
@@ -243,7 +270,11 @@
             targetDisplay.classList.remove('hidden');
             targetText.innerText = "Querying varieties and toning factors database...";
 
-            const promptText = `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Surface toning state is classified as: ${config.tone}. Provide a clean bulleted list detailing how this context changes baseline evaluation.`;
+            const promptText = `Identify well-known varieties, key dates, errors, and physical defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. 
+            Surface Toning: ${config.tone}. 
+            Striking Profile: ${config.strike}. 
+            Surface Features: ${config.surface}. 
+            Provide a clean bulleted explanation breaking down how these expert factors modify the overall valuation baseline.`;
 
             try {
                 let textResult = "";
@@ -264,7 +295,7 @@
             } catch (error) {
                 console.error(error);
                 if (currentId === activeMultiplierId) {
-                    showError(`Authentication/API Error: ${error.message || error}\n\nTip: Double check your API key string has no typos or missing characters.`);
+                    showError(`Authentication/API Error: ${error.message || error}`);
                 }
             } finally {
                 if (currentId === activeMultiplierId) {
@@ -294,7 +325,15 @@
             else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
             else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
 
-            const promptText = `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}, Toning Profile: ${config.tone}. Account for premium adjustments due to toning value parameters (e.g. higher value premium if desirable rainbow or distinct red/gold surfaces, steep discount or rejection if artificial or splotchy damage).`;
+            const promptText = `Analyze standard market transaction values for this configuration: 
+            Denomination: ${config.denomination}, 
+            Year: ${config.year}, 
+            Mint Mark: ${config.mint}, 
+            Condition: ${sheldonNotation}, 
+            Toning Profile: ${config.tone}, 
+            Strike Variations: ${config.strike}, 
+            Surface Profile: ${config.surface}. 
+            Calculate strict pricing adjustments based on the parameters (e.g., provide high premiums for genuine errors or exquisite natural toning; apply dramatic value reductions, zero-out, or label as a potential ungradable slab reject if 'Whizzing' or 'Artificial Toning' modifications are highlighted).`;
             
             const strictSchema = {
                 type: "OBJECT",
@@ -340,7 +379,7 @@
             } catch (error) {
                 console.error(error);
                 if (currentId === activeSearchId) {
-                    showError(`Authentication/API Error: ${error.message || error}\n\nTip: If this is an 'invalid authentication credentials' message, make sure your copied API key string doesn't have an extra space at the beginning or end.`);
+                    showError(`Authentication/API Error: ${error.message || error}`);
                 }
             } finally {
                 if (currentId === activeSearchId) {
