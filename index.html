@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatCoin™ - Numismatic Appraisal Suite</title>
-    <!-- Tailwind CSS for clean, rapid mobile styling -->
+    <!-- Tailwind CSS Engine for Clean Mobile UI -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #11141a; color: #f0f4f8; }
@@ -12,45 +12,45 @@
 </head>
 <body class="p-4 max-w-md mx-auto font-sans">
 
-    <!-- Header -->
+    <!-- App Banner -->
     <div class="text-center my-6 border-b border-gray-800 pb-4">
         <h1 class="text-3xl font-bold tracking-tight text-white">WhatCoin™</h1>
         <p class="text-xs text-blue-400 mt-1 uppercase tracking-wider font-semibold">Numismatic Currency Appraisal Suite</p>
     </div>
 
-    <!-- Target Selection -->
+    <!-- Target Selection Configurator -->
     <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
         <h2 class="text-sm font-bold text-gray-300 mb-3">Select State Target Variety</h2>
         <div id="coin-chips" class="flex flex-wrap gap-2">
-            <!-- Chips injected by JS -->
+            <!-- Chips injected by JS Engine -->
         </div>
     </div>
 
-    <!-- Condition Grading -->
+    <!-- Surface Micro-Condition Grading -->
     <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
         <h2 class="text-sm font-bold text-gray-300 mb-3">Luster & Wear Condition Grade</h2>
         <div class="flex flex-col gap-2">
-            <button id="btn-grade-au" onclick="setGrade('AU')" class="text-left bg-[#242c3d] border border-blue-500/50 p-3 rounded-lg transition">
+            <button id="btn-grade-au" onclick="setGrade('AU')" class="text-left bg-[#242c3d] border border-blue-500/50 p-3 rounded-lg transition-all">
                 <div class="text-sm font-semibold text-blue-400" id="txt-grade-au">Circulated / About Uncirculated (AU)</div>
                 <div class="text-xs text-gray-500 mt-0.5">Trace wear on high design points</div>
             </button>
-            <button id="btn-grade-ms" onclick="setGrade('MS')" class="text-left bg-[#242c3d] border border-transparent p-3 rounded-lg transition">
+            <button id="btn-grade-ms" onclick="setGrade('MS')" class="text-left bg-[#242c3d] border border-transparent p-3 rounded-lg transition-all">
                 <div class="text-sm font-semibold text-gray-400" id="txt-grade-ms">Mint State / Uncirculated (MS)</div>
                 <div class="text-xs text-gray-500 mt-0.5">Full original mint frost, no wear</div>
             </button>
         </div>
     </div>
 
-    <!-- Micro-Error Checklist -->
+    <!-- Micro-Error Checklist Verification -->
     <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
         <h2 class="text-sm font-bold text-gray-300 mb-2">Micro-Attribution Error Checklist</h2>
         <p class="text-xs text-gray-400 mb-3 leading-relaxed">Examine the coin surface under magnification. Check any confirmed anomalies below:</p>
         <div id="error-checklist" class="flex flex-col gap-2">
-            <!-- Checklist items injected by JS -->
+            <!-- Checklist items injected by JS Engine -->
         </div>
     </div>
 
-    <!-- Valuation Output Panel -->
+    <!-- Live Financial Appraisal Output Panel -->
     <div class="bg-[#1e293b] rounded-xl p-5 mb-4 border border-blue-400 shadow-xl text-center">
         <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Estimated Real Market Value</span>
         <div id="display-value" class="text-5xl font-extrabold text-white my-3">$0.25</div>
@@ -59,29 +59,29 @@
         <input id="input-notes" type="text" placeholder="Add coin details (e.g., Mint mark clarity...)" 
                class="w-full bg-[#0f172a] rounded-lg p-3 text-sm text-gray-200 border border-gray-700 focus:outline-none focus:border-blue-500 mb-3">
         
-        <button onclick="saveToLedger()" class="w-full bg-blue-400 hover:bg-blue-500 text-[#0f172a] font-bold py-3 rounded-lg transition text-sm">
+        <button onclick="saveToLedger()" class="w-full bg-blue-400 hover:bg-blue-500 text-[#0f172a] font-bold py-3 rounded-lg transition-all text-sm">
             Commit to WhatCoin™ Log
         </button>
     </div>
 
-    <!-- Saved Ledger Logs -->
+    <!-- Persistent Storage Ledger View -->
     <div class="bg-[#1b212c] rounded-xl p-4 mb-6 border border-[#2c3545] shadow-lg">
         <div class="flex justify-between items-center mb-3">
             <h2 class="text-sm font-bold text-gray-300">Saved Ledger Logs</h2>
             <button onclick="clearLedger()" id="btn-clear" class="text-xs font-semibold text-red-400 hidden">Clear All</button>
         </div>
         <div id="ledger-list" class="flex flex-col gap-3 divide-y divide-gray-800">
-            <!-- Logs injected by JS -->
+            <!-- Logs injected by JS Engine -->
         </div>
     </div>
 
-    <!-- Core App Engine -->
+    <!-- Core App Logic Engine -->
     <script>
         const STATE_COIN_DB = {
             '1999-P_DELAWARE': { name: '1999-P Delaware', baseValue: 0.25, notableErrors: [{ id: 'del_spit', label: 'Spitting Horse (Die Crack)', premiumCirculated: 10, premiumUncirculated: 50 }] },
-            '2004-D_WISCONSIN': { name: '2004-D Wisconsin', baseValue: 0.25, notableErrors: [{ id: 'wi_high', label: 'Extra Corn Leaf - High', premiumCirculated: 50, premiumUncirculated: 300 }, { id: 'wi_low', label: 'Extra Corn Leaf - Low', premiumCirculated: 40, premiumUncirculated: 250 }] },
-            '2005-P_KANSAS': { name: '2005-P Kansas', baseValue: 0.25, notableErrors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Die)', premiumCirculated: 15, premiumUncirculated: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack)', premiumCirculated: 5, premiumUncirculated: 45 }] },
-            '2005-P_MINNESOTA': { name: '2005-P Minnesota', baseValue: 0.25, notableErrors: [{ id: 'mn_tree', label: 'Extra Tree (Doubled Die)', premiumCirculated: 10, premiumUncirculated: 120 }] },
+            '2004-D_WISCONSIN': { name: '2004-D Wisconsin', baseValue: 0.25, notableErrors: [{ id: 'wi_high', label: 'Extra Corn Leaf - High Variety', premiumCirculated: 50, premiumUncirculated: 300 }, { id: 'wi_low', label: 'Extra Corn Leaf - Low Variety', premiumCirculated: 40, premiumUncirculated: 250 }] },
+            '2005-P_KANSAS': { name: '2005-P Kansas', baseValue: 0.25, notableErrors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Filled Die)', premiumCirculated: 15, premiumUncirculated: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack)', premiumCirculated: 5, premiumUncirculated: 45 }] },
+            '2005-P_MINNESOTA': { name: '2005-P Minnesota', baseValue: 0.25, notableErrors: [{ id: 'mn_tree', label: 'Extra Tree (Doubled Die Reverse)', premiumCirculated: 10, premiumUncirculated: 120 }] },
             '2008-P_ARIZONA': { name: '2008-P Arizona', baseValue: 0.25, notableErrors: [{ id: 'az_cactus', label: 'Extra Cactus Leaf / Die Chip', premiumCirculated: 3, premiumUncirculated: 25 }] }
         };
 
@@ -100,7 +100,7 @@
             const container = document.getElementById('coin-chips');
             container.innerHTML = Object.keys(STATE_COIN_DB).map(key => {
                 const isActive = key === activeCoin;
-                return `<button onclick="setCoin('${key}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${isActive ? 'bg-blue-400 text-[#0f172a] border-blue-500' : 'bg-[#242c3d] text-gray-400 border-gray-700'}">${STATE_COIN_DB[key].name}</button>`;
+                return `<button onclick="setCoin('${key}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${isActive ? 'bg-blue-400 text-[#0f172a] border-blue-500' : 'bg-[#242c3d] text-gray-400 border-gray-700'}">${STATE_COIN_DB[key].name}</button>`;
             }).join('');
         }
 
@@ -114,8 +114,8 @@
 
         function setGrade(grade) {
             activeGrade = grade;
-            document.getElementById('btn-grade-au').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition ${grade === 'AU' ? 'border-blue-500/50' : 'border-transparent'}`;
-            document.getElementById('btn-grade-ms').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition ${grade === 'MS' ? 'border-blue-500/50' : 'border-transparent'}`;
+            document.getElementById('btn-grade-au').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition-all ${grade === 'AU' ? 'border-blue-400' : 'border-transparent'}`;
+            document.getElementById('btn-grade-ms').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition-all ${grade === 'MS' ? 'border-blue-400' : 'border-transparent'}`;
             document.getElementById('txt-grade-au').className = `text-sm font-semibold ${grade === 'AU' ? 'text-blue-400' : 'text-gray-400'}`;
             document.getElementById('txt-grade-ms').className = `text-sm font-semibold ${grade === 'MS' ? 'text-blue-400' : 'text-gray-400'}`;
             renderChecklist();
@@ -130,7 +130,7 @@
                 const rowSelected = activeErrors[err.id] ? 'border-amber-500/50 bg-[#2d2d24]' : 'border-gray-700 bg-[#242c3d]';
                 const premium = activeGrade === 'MS' ? err.premiumUncirculated : err.premiumCirculated;
                 return `
-                    <div onclick="toggleError('${err.id}')" class="flex items-center border p-3 rounded-lg cursor-pointer transition ${rowSelected}">
+                    <div onclick="toggleError('${err.id}')" class="flex items-center border p-3 rounded-lg cursor-pointer transition-all ${rowSelected}">
                         <div class="w-4 h-4 rounded border-2 mr-3 flex flex-shrink-0 items-center justify-center ${checked}"></div>
                         <div class="flex-1">
                             <div class="text-sm font-medium text-gray-200">${err.label}</div>
@@ -200,7 +200,7 @@
             const container = document.getElementById('ledger-list');
             const clearBtn = document.getElementById('btn-clear');
             if (ledger.length === 0) {
-                container.innerHTML = `<p class="text-xs italic text-gray-600 text-center py-4">No appraised items logged yet.</p>`;
+                container.innerHTML = `<p class="text-xs italic text-gray-600 text-center py-4">No items logged in historical database.</p>`;
                 clearBtn.classList.add('hidden');
                 return;
             }
