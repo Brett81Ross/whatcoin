@@ -3,90 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Autonomous AI Intelligence Suite</title>
+    <title>WhatCoin™ - Autonomous AI Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0b0f17; color: #e2e8f0; }
-        .glass { background-color: #111622; border: 1px solid #1e293b; }
+        body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
+        .glass-panel { background: rgba(17, 22, 34, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        select { background-color: #0b0f17 !important; color: #fff !important; }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto font-sans">
+<body class="p-4 flex flex-col items-center font-sans antialiased">
 
     <!-- Logo Section -->
-    <div class="text-center mb-6">
-        <img src="logo5.png" alt="Logo" class="w-20 h-20 mx-auto mb-2 rounded-full">
-        <h1 class="text-2xl font-black text-white">WhatCoin™</h1>
+    <div class="text-center my-8">
+        <img src="whatcoinlogo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="w-32 h-32 mx-auto rounded-2xl shadow-[0_0_30px_rgba(96,165,250,0.3)] mb-4">
+        <h1 class="text-3xl font-black tracking-tighter text-white">WhatCoin™</h1>
+        <p class="text-[10px] uppercase tracking-[0.2em] text-blue-400 mt-1">Autonomous AI Intelligence Suite</p>
     </div>
 
-    <div class="glass p-4 rounded-xl space-y-4">
+    <!-- Main Controller -->
+    <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl space-y-5">
+        
         <!-- Year -->
         <div>
-            <label class="text-[10px] font-bold text-gray-500 uppercase">Year</label>
-            <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Year</label>
+            <select class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>1960</option>
             </select>
         </div>
 
         <!-- Denomination -->
         <div>
-            <label class="text-[10px] font-bold text-gray-500 uppercase">Denomination</label>
-            <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Denomination</label>
+            <select class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>Cent (Penny)</option>
                 <option>Nickel</option>
-                <option>Dime</option>
-                <option>Quarter</option>
-                <option>Half Dollar</option>
             </select>
         </div>
 
-        <!-- Tone (Aging) -->
+        <!-- Tone -->
         <div>
-            <label class="text-[10px] font-bold text-gray-500 uppercase">Tone (Aging)</label>
-            <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Tone (Aging)</label>
+            <select class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>None/Natural</option>
                 <option>Light Toning</option>
-                <option>Target/Bullseye</option>
                 <option>Rainbow</option>
-                <option>Artificial/Damaged</option>
             </select>
         </div>
 
         <!-- Mint -->
         <div>
-            <label class="text-[10px] font-bold text-gray-500 uppercase">Mint</label>
-            <select class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm">
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Mint</label>
+            <select class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>P (Philadelphia)</option>
                 <option>D (Denver)</option>
-                <option>S (San Francisco)</option>
-                <option>W (West Point)</option>
             </select>
         </div>
 
-        <!-- Voice Search/Controls -->
-        <button onclick="startVoiceSearch()" class="w-full bg-[#1e293b] text-blue-400 font-bold py-3 rounded-lg text-sm uppercase">
-            🎤 Voice Input
+        <button onclick="startVoiceSearch()" class="w-full bg-[#1e293b] hover:bg-[#2a3754] text-blue-400 font-bold py-4 rounded-xl text-xs uppercase tracking-widest transition-all border border-blue-900/30">
+            🎤 VOICE INPUT
         </button>
-        <button onclick="runQuery()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg text-sm uppercase">
-            Query Live AI
+
+        <button onclick="runQuery()" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-black py-4 rounded-xl text-sm uppercase tracking-widest shadow-lg shadow-blue-600/20 transition-all">
+            QUERY LIVE AI
         </button>
     </div>
 
     <script>
-        function runQuery() {
-            console.log("Querying AI...");
-        }
-
+        function runQuery() { console.log("Querying..."); }
         function startVoiceSearch() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                const recognition = new SpeechRecognition();
-                recognition.start();
-                recognition.onresult = (event) => {
-                    console.log("Voice Input:", event.results[0][0].transcript);
-                };
-            } else {
-                alert("Voice search not supported.");
-            }
+            const rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (rec) {
+                const r = new rec();
+                r.start();
+                r.onresult = (e) => console.log("Input:", e.results[0][0].transcript);
+            } else { alert("Voice search unsupported."); }
         }
     </script>
 </body>
