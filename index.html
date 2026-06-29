@@ -16,7 +16,6 @@
         <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite</p>
     </div>
 
-    <!-- API Credential Configuration -->
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg">
         <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Gemini API Credentials</label>
         <input 
@@ -69,8 +68,8 @@
 
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                // Updated to gemini-3.1-flash-lite
-                const model = ai.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
+                // Updated to gemini-3.5-flash
+                const model = ai.getGenerativeModel({ model: "gemini-3.5-flash" });
 
                 const result = await model.generateContent({
                     contents: `Analyze coin: "${rawInput}". Return JSON only: {"name": "Example Coin", "price": 0.00}`,
@@ -83,7 +82,7 @@
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
                 console.error("AI Error Details:", error);
-                alert("AI Error. Ensure gemini_api_key_3 is valid for gemini-3.1-flash-lite.");
+                alert("AI Error. Ensure gemini_api_key_3 is valid for gemini-3.5-flash.");
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerText = "Query Live AI Engine";
