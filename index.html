@@ -31,7 +31,7 @@
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Denomination</label>
             <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                <option value="1c">Cent (Penny)</option>
+                <option value="1c">Penny</option>
                 <option value="5c">Nickel</option>
                 <option value="10c">Dime</option>
                 <option value="25c">Quarter</option>
@@ -139,7 +139,7 @@
                 optionsStr += `<option value="${y}">${y}</option>`;
             }
             yearSelect.innerHTML = optionsStr;
-            yearSelect.value = "1898";
+            yearSelect.value = "1977";
         });
 
         function updateGradeLabel(val) {
@@ -198,7 +198,7 @@
             } catch (error) {
                 console.error(error);
                 showError("Failed to fetch varieties. Check your API key parameters.");
-            } {
+            } finally {
                 multiplierBtn.disabled = false;
                 multiplierBtn.innerText = "Multipliers";
             }
@@ -219,11 +219,16 @@
 
                 const response = await ai.models.generateContent({
                     model: "gemini-3.5-flash",
-                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Grade: ${config.grade}/10 (where 0 is completely bad/worn smooth and 10 is Choice Very Fine attributes). Output JSON format only: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`,
-                    config: { responseMimeType: "application/json" }
+                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Grade: ${config.grade}/10 (where 0 is completely bad/worn smooth and 10 is Choice Very Fine attributes). Output raw JSON data only matching exactly this schema format without markdown wrappers: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`
                 });
 
-                const data = JSON.parse(response.text);
+                // Clean response text from common markdown code block wrappers
+                let rawText = response.text.trim();
+                if (rawText.startsWith("```")) {
+                    rawText = rawText.replace(/^```(?:json)?/, "").replace(/```$/, "").trim();
+                }
+
+                const data = JSON.parse(rawText);
                 document.getElementById('target-coin-name').innerText = data.name;
                 document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
                 document.getElementById('display-mintage').innerText = data.mintage_count || "Unknown";
@@ -234,7 +239,7 @@
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
                 console.error(error);
-                showError("Evaluation failed. Make sure your network connection is stable.");
+                showError("Evaluation parsing failed. Try clicking Query Live AI again.");
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerText = "Query Live AI";
