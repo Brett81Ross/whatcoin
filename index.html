@@ -11,7 +11,7 @@
 
     <div class="text-center my-6 border-b border-gray-900 pb-4">
         <h1 class="text-3xl font-extrabold tracking-tight text-white">WhatCoin™</h1>
-        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite v2.3</p>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite v2.5</p>
     </div>
 
     <!-- API Credentials Container -->
@@ -25,43 +25,33 @@
         >
     </div>
 
-    <!-- Structured Parameter Controls -->
-    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl space-y-3">
+    <!-- Structured Parameter Controls (Restructured per fdbf9790-1252-497f-94fc-b2bb3a02b8ca) -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl space-y-4">
         
+        <!-- 1. Year -->
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Year</label>
+            <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+            </select>
+        </div>
+
+        <!-- 2. Denomination -->
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Denomination</label>
             <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
                 <option value="1c">Cent (Penny)</option>
                 <option value="5c">Nickel</option>
                 <option value="10c">Dime</option>
-                <option value="25c">Quarter</option>
+                <option value="25c" selected>Quarter</option>
                 <option value="50c">Half Dollar</option>
                 <option value="11">Dollar Coin</option>
             </select>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Year</label>
-                <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Mint Mark</label>
-                <select id="mint-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                    <option value="P (Philadelphia)">P (Philadelphia)</option>
-                    <option value="D (Denver)">D (Denver)</option>
-                    <option value="S (San Francisco)">S (San Francisco)</option>
-                    <option value="W (West Point)">W (West Point)</option>
-                    <option value="No Mint Mark">No Mint Mark</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Grade Selection Control -->
+        <!-- 3. Tone (Grade Scale Evaluation) -->
         <div>
             <div class="flex justify-between items-center mb-1">
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Grade Scale Evaluation</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Tone / Condition Grade</label>
                 <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">20 - Fine (F)</span>
             </div>
             <input 
@@ -77,6 +67,18 @@
                 <span>PO-1 (Poor)</span>
                 <span>MS-70 (Uncirculated)</span>
             </div>
+        </div>
+
+        <!-- 4. Mint -->
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Mint Mark</label>
+            <select id="mint-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                <option value="P (Philadelphia)">P (Philadelphia)</option>
+                <option value="D (Denver)">D (Denver)</option>
+                <option value="S (San Francisco)">S (San Francisco)</option>
+                <option value="W (West Point)">W (West Point)</option>
+                <option value="No Mint Mark">No Mint Mark</option>
+            </select>
         </div>
 
         <!-- Action Matrix -->
@@ -119,6 +121,7 @@
         </div>
     </div>
 
+    <!-- Live Appraisal Valuation Panel (Back to the bottom anchor placement) -->
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center shadow-inner">
         <div id="display-value" class="text-5xl font-black text-white">$0.00</div>
     </div>
@@ -142,7 +145,8 @@
                 optionsStr += `<option value="${y}">${y}</option>`;
             }
             yearSelect.innerHTML = optionsStr;
-            yearSelect.value = "1976";
+            yearSelect.value = "1972";
+            document.getElementById('mint-select').value = "S (San Francisco)";
         });
 
         function updateGradeLabel(val) {
@@ -181,7 +185,6 @@
             }
         }
 
-        // Native HTTP POST implementation fallback for bulletproof authentication handling
         async function fetchDirectRestFallback(apiKey, prompt, schemaConfig = null) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
             
