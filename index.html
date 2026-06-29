@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Numismatic Matrix</title>
+    <title>WhatCoin™ - Autonomous AI Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
@@ -23,24 +23,16 @@
     <!-- Main Controller -->
     <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl space-y-4">
         
-        <!-- API Key -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Gemini API Key</label>
             <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-mono shadow-inner">
         </div>
 
-        <!-- Year -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Year</label>
-            <select id="year-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
-                <option>2026</option><option>2025</option><option>2024</option><option>2020</option>
-                <option>2010</option><option>2000</option><option>1990</option><option>1980</option>
-                <option>1970</option><option>1960</option><option>1950</option><option>1940</option>
-                <option>1930</option><option>1920</option><option>1910</option><option>1900</option>
-            </select>
+            <select id="year-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner"></select>
         </div>
 
-        <!-- Denomination -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Denomination</label>
             <select id="denom-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
@@ -49,7 +41,6 @@
             </select>
         </div>
 
-        <!-- Tone -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Tone (Aging)</label>
             <select id="tone-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
@@ -58,7 +49,6 @@
             </select>
         </div>
 
-        <!-- Mint -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Mint Mark</label>
             <select id="mint-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
@@ -66,7 +56,6 @@
             </select>
         </div>
 
-        <!-- Proof Count -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Total Proof Count</label>
             <input type="text" id="proof-count" readonly value="Click Query to Load" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner opacity-70">
@@ -82,30 +71,33 @@
     </div>
 
     <script>
+        // Populate years 1800-2028
+        const yearSelect = document.getElementById('year-select');
+        for (let i = 2028; i >= 1800; i--) {
+            const opt = document.createElement('option');
+            opt.value = i; opt.innerHTML = i;
+            yearSelect.appendChild(opt);
+        }
+
         async function runQuery() { 
             const apiKey = document.getElementById('api-key').value;
-            const year = document.getElementById('year-select').value;
-            const denom = document.getElementById('denom-select').value;
-            const tone = document.getElementById('tone-select').value;
-            const mint = document.getElementById('mint-select').value;
             const btn = document.getElementById('query-btn');
-            
             if(!apiKey) { alert("Please enter your API key."); return; }
 
             btn.innerText = "QUERYING...";
-            
-            const prompt = `Provide the total proof mintage count for a ${year} ${mint} ${denom} with ${tone} toning. Return only the number.`;
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const prompt = `Provide the total proof mintage count for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} with ${document.getElementById('tone-select').value} toning. Return only the number. If unknown, return 'N/A'.`;
 
             try {
-                const response = await fetch(url, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 const data = await response.json();
-                const result = data.candidates[0].content.parts[0].text;
-                document.getElementById('proof-count').value = result;
+                
+                // Safe parsing check to avoid errors like in 1000037476.jpg
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Parsing Error";
+                document.getElementById('proof-count').value = text;
             } catch (err) {
                 alert("Query failed: " + err.message);
             } finally {
