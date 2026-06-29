@@ -71,7 +71,6 @@
     </div>
 
     <script>
-        // Populate years 1800-2028
         const yearSelect = document.getElementById('year-select');
         for (let i = 2028; i >= 1800; i--) {
             const opt = document.createElement('option');
@@ -85,7 +84,7 @@
             if(!apiKey) { alert("Please enter your API key."); return; }
 
             btn.innerText = "QUERYING...";
-            const prompt = `Provide the total proof mintage count for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} with ${document.getElementById('tone-select').value} toning. Return only the number. If unknown, return 'N/A'.`;
+            const prompt = `Return ONLY the total proof mintage number for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} with ${document.getElementById('tone-select').value} toning. Do not use words. If unknown, return 0.`;
 
             try {
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
@@ -95,11 +94,12 @@
                 });
                 const data = await response.json();
                 
-                // Safe parsing check to avoid errors like in 1000037476.jpg
-                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Parsing Error";
-                document.getElementById('proof-count').value = text;
+                // Enhanced parsing: find first numeric string or sequence
+                const fullText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "0";
+                const match = fullText.match(/\d[\d,.]*/);
+                document.getElementById('proof-count').value = match ? match[0] : fullText;
             } catch (err) {
-                alert("Query failed: " + err.message);
+                document.getElementById('proof-count').value = "Error";
             } finally {
                 btn.innerText = "QUERY LIVE AI";
             }
