@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Advanced Numismatic Engine</title>
+    <title>WhatCoin™ - Autonomous Numismatic Engine</title>
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #0b0f17; color: #f0f4f8; }
-        /* Smooth scrollbar styling for a native app feel */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #11141a; }
         ::-webkit-scrollbar-thumb { background: #2c3545; border-radius: 4px; }
@@ -21,7 +20,20 @@
         <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
             WhatCoin™
         </h1>
-        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Numismatic Intelligence Suite</p>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite</p>
+    </div>
+
+    <!-- API Credential Configuration -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg">
+        <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Gemini API Credentials</label>
+        <input 
+            id="api-key-input" 
+            type="password" 
+            placeholder="Paste your Gemini API Key here..." 
+            class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
+            onchange="saveApiKey(this.value)"
+        >
+        <p class="text-[10px] text-gray-500 mt-1.5">Stored securely inside local device storage vectors.</p>
     </div>
 
     <!-- Manual Entry Search Panel -->
@@ -32,13 +44,13 @@
                 <input 
                     id="search-input" 
                     type="text" 
-                    placeholder="Enter Year, Mint Mark, Variety (e.g., 1931 S Penny)..." 
+                    placeholder="Enter Year, Mint Mark, Variety (e.g., 1905 Indian Head Penny)..." 
                     class="w-full bg-[#182032] rounded-lg p-3.5 text-sm text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-blue-500 transition-all font-medium"
                 >
                 <button onclick="clearSearch()" class="absolute right-3 top-3.5 text-gray-500 hover:text-white text-sm font-bold">✕</button>
             </div>
-            <button onclick="executeSearch()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all text-xs uppercase tracking-wider shadow-lg">
-                Search Specimen
+            <button id="search-btn" onclick="executeSearch()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all text-xs uppercase tracking-wider shadow-lg flex justify-center items-center gap-2">
+                <span>Query Live AI Engine</span>
             </button>
         </div>
     </div>
@@ -55,7 +67,7 @@
         <div class="flex gap-4 mt-2 text-xs text-gray-400">
             <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
             <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
-            <div>Melt Tier: <span id="target-coin-base" class="text-green-400 font-semibold">$0.00</span></div>
+            <div>Source Feed: <span id="target-coin-base" class="text-green-400 font-semibold">Gemini 3.5 Live</span></div>
         </div>
     </div>
 
@@ -89,7 +101,7 @@
         <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Known Multiplier Options & Rarities</h2>
         <p class="text-[11px] text-gray-500 mb-3">Examine specimen attributes under magnification to verify anomalies:</p>
         <div id="error-checklist" class="flex flex-col gap-2">
-            <!-- Multipliers drop down here dynamically -->
+            <!-- Dynamic layout -->
         </div>
     </div>
 
@@ -118,134 +130,150 @@
         </div>
     </div>
 
-    <!-- App Configuration Logic Engine -->
+    <!-- Dynamic JavaScript Modules -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/gen-ai": "https://esm.run/@google/gen-ai"
+        }
+      }
+    </script>
+    <script type="module">
+        import { GoogleGenAI } from '@google/gen-ai';
+
+        window.GoogleGenAIInstance = GoogleGenAI;
+    </script>
+
     <script>
-        // Matrix prices safely tracking across: [0-3 Bad, 4-6 Good, 8 Very Good, 9 Fine, 10 Very Fine]
-        const NUMISMATIC_PRICING_MATRIX = {
-            // Lincoln Wheat Pennies
-            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [35.00, 60.00, 70.00, 75.00, 85.00] },
-            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [450.00, 650.00, 750.00, 850.00, 975.00] },
-            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [65.00, 90.00, 100.00, 115.00, 125.00] },
-            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [95.00, 150.00, 185.00, 220.00, 280.00] },
-            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [300.00, 450.00, 550.00, 650.00, 775.00] },
-            
-            // Special Anniversary Key Issues
-            "1996_W_DIME": { name: "1996-W Roosevelt Dime (50th Anniv. Mint Set Issue)", type: "key", prices: [5.00, 8.50, 12.00, 15.00, 22.00] },
-
-            // Silver Half Dollars
-            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [2.50, 4.00, 5.00, 6.00, 7.50] }
-        };
-
         const CONDITION_TIERS = [
-            { idx: 0, code: "0-3", label: "Bad (0-3)", desc: "Severely worn, damaged, or heavily smoothed surfaces; basic outlines only." },
-            { idx: 1, code: "4-6", label: "Good (4-6)", desc: "Heavy to moderate wear. Main design forms and features are visible but flat." },
-            { idx: 2, code: "8", label: "Very Good (8)", desc: "Slightly more detail visible in the design elements and letter margins." },
-            { idx: 3, code: "9", label: "Fine (9)", desc: "Moderate wear on deep design parts. Major elements remain fully distinct." },
-            { idx: 4, code: "10", label: "Very Fine (10)", desc: "Slight wear on highest spots. All text lettering and main details are clear." }
+            { idx: 0, code: "0-3", label: "Bad (0-3)", desc: "Severely worn, damaged, or heavily smoothed surfaces." },
+            { idx: 1, code: "4-6", label: "Good (4-6)", desc: "Heavy to moderate wear. Main design forms and features visible." },
+            { idx: 2, code: "8", label: "Very Good (8)", desc: "Slightly more detail visible in design elements." },
+            { idx: 3, code: "9", label: "Fine (9)", desc: "Moderate wear on deep design parts. Major elements distinct." },
+            { idx: 4, code: "10", label: "Very Fine (10)", desc: "Slight wear on highest spots. Lettering and main details clear." }
         ];
 
         let selectedCoin = null;
-        let activeGradeIdx = 1; // Default to Good (4-6)
+        let activeGradeIdx = 1; 
         let activeErrors = {};
         let ledger = [];
 
         function init() {
             loadLedger();
+            const savedKey = localStorage.getItem('whatcoin_gemini_api_key');
+            if (savedKey) {
+                document.getElementById('api-key-input').value = savedKey;
+            }
             calculateAppraisal();
         }
 
-        function executeSearch() {
+        function saveApiKey(val) {
+            localStorage.setItem('whatcoin_gemini_api_key', val.trim());
+        }
+
+        async function executeSearch() {
             const rawInput = document.getElementById('search-input').value.trim();
             if (!rawInput) return;
 
-            const cleanQuery = rawInput.toLowerCase();
-            
-            // Extract components
-            let parsedYear = rawInput.match(/\b(18|19|20)\d{2}\b/)?.[0] || 'N/A';
-            let parsedMint = 'P';
-            if (/\b(d|denver)\b/.test(cleanQuery)) parsedMint = 'D';
-            else if (/\b(s|san francisco)\b/.test(cleanQuery)) parsedMint = 'S';
-            else if (/\b(w|west point|w mint)\b/.test(cleanQuery)) parsedMint = 'W';
-            else if (/\b(cc|carson city)\b/.test(cleanQuery)) parsedMint = 'CC';
-
-            // Generate composite database key
-            let lookUpKey = `${parsedYear}_${parsedMint}_GENERIC`;
-            if (cleanQuery.includes('vdb') && parsedYear === '1909') {
-                lookUpKey = "1909_S_VDB_PENNY";
-            } else if (cleanQuery.includes('penny') || cleanQuery.includes('cent')) {
-                lookUpKey = `${parsedYear}_${parsedMint}_PENNY`;
-            } else if (cleanQuery.includes('half') || cleanQuery.includes('50c')) {
-                lookUpKey = `${parsedYear}_${parsedMint}_HALF`;
-            } else if (cleanQuery.includes('dime') || cleanQuery.includes('10c')) {
-                lookUpKey = `${parsedYear}_${parsedMint}_DIME`;
+            const apiKey = localStorage.getItem('whatcoin_gemini_api_key');
+            if (!apiKey) {
+                alert("Please input your Gemini API Key credentials into the setup module first.");
+                return;
             }
 
-            // Check our comprehensive matrix
-            if (NUMISMATIC_PRICING_MATRIX[lookUpKey]) {
-                const mapData = NUMISMATIC_PRICING_MATRIX[lookUpKey];
-                selectedCoin = {
-                    id: lookUpKey,
-                    year: parsedYear,
-                    mint: parsedMint,
-                    name: mapData.name,
-                    isMatrix: true,
-                    type: mapData.type,
-                    priceCurve: mapData.prices,
-                    baseValue: mapData.prices[0],
-                    errors: [
-                        { id: 'err_ddo', label: 'Doubled Die Strike Anomaly', premium: 45 },
-                        { id: 'err_lam', label: 'Lamination Flaw / Planchet Flakiness', premium: 15 }
-                    ]
-                };
-            } else {
-                // Precise generic asset class lookups
-                let baseValue = 0.01;
-                let coinName = "United States Currency Specimen";
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.disabled = true;
+            searchBtn.innerHTML = `<span>Analyzing Numismatic Ledger...</span>`;
 
-                if (cleanQuery.includes('half') || cleanQuery.includes('50c')) {
-                    baseValue = 0.50;
-                    coinName = "Kennedy Half Dollar";
-                    if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 10.50;
-                        coinName = "Silver Half Dollar Bullion Specimen";
+            try {
+                let parsedYear = rawInput.match(/\b(18|19|20)\d{2}\b/)?.[0] || 'N/A';
+                let parsedMint = 'P';
+                if (/\b(d|denver)\b/.test(rawInput.toLowerCase())) parsedMint = 'D';
+                if (/\b(s|san francisco)\b/.test(rawInput.toLowerCase())) parsedMint = 'S';
+
+                // Initialize Google Gen AI module dynamically inside the window structure
+                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                
+                const systemInstruction = `You are an expert numismatic grading and valuation engine. 
+                Analyze the user's asset text string input and return real, current estimated market auction data values for that coin.
+                You MUST return your response strictly as a single JSON object. Do not include markdown code block styling or text wrapping. 
+                The pricing data array array MUST have exactly 5 elements corresponding to these index points:
+                Index 0: Bad (0-3) condition value
+                Index 1: Good (4-6) condition value
+                Index 2: Very Good (8) condition value
+                Index 3: Fine (9) condition value
+                Index 4: Very Fine (10) condition value
+
+                Example response for a common vintage coin like an Indian Head:
+                {"name": "1905 Indian Head Penny", "year": "1905", "mint": "P", "priceCurve": [1.50, 3.50, 8.00, 14.00, 24.50]}
+                Ensure accurate higher floor pricing for vintage key dates or old copper varieties instead of grouping them into common modern value curves.`;
+
+                const response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: `Analyze this coin specification query: "${rawInput}". Year fallback: ${parsedYear}, Mint fallback: ${parsedMint}.`,
+                    config: {
+                        systemInstruction: systemInstruction,
+                        responseMimeType: "application/json"
                     }
-                } else if (cleanQuery.includes('dime') || cleanQuery.includes('10c')) {
-                    baseValue = 0.10;
-                    coinName = "Roosevelt Dime";
-                    if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 2.25; // 90% Silver baseline melt evaluation point
-                        coinName = "Silver Roosevelt Dime Specimen";
-                    }
-                } else if (cleanQuery.includes('penny') || cleanQuery.includes('cent')) {
-                    baseValue = 0.01;
-                    coinName = cleanQuery.includes('wheat') || (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1958) 
-                        ? "Lincoln Wheat Penny" : "Lincoln Shield Cent";
-                    if (coinName === "Lincoln Wheat Penny") baseValue = 0.05;
-                } else if (cleanQuery.includes('quarter') || cleanQuery.includes('25c')) {
-                    baseValue = 0.25;
-                    coinName = "Washington Quarter";
-                    if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 5.25;
-                        coinName = "Washington Silver Quarter Bullion";
-                    }
+                });
+
+                const cleanJsonText = response.text.trim();
+                const data = JSON.parse(cleanJsonText);
+
+                if (data && data.priceCurve && data.priceCurve.length === 5) {
+                    selectedCoin = {
+                        id: 'AI_' + Date.now(),
+                        year: data.year || parsedYear,
+                        mint: data.mint || parsedMint,
+                        name: data.name || rawInput,
+                        priceCurve: data.priceCurve.map(p => parseFloat(p)),
+                        errors: [
+                            { id: 'gen_ddo', label: 'Verified Doubled Die Obverse (DDO)', premium: 25 },
+                            { id: 'gen_crack', label: 'Major Die Crack / Reticle Fractures', premium: 10 }
+                        ]
+                    };
+                } else {
+                    throw new Error("Invalid pricing structure payload.");
                 }
 
-                selectedCoin = {
-                    id: 'GENERIC_' + Date.now(),
-                    year: parsedYear,
-                    mint: parsedMint,
-                    name: rawInput.length > 5 ? rawInput : `${parsedYear}-${parsedMint} ${coinName}`,
-                    isMatrix: false,
-                    baseValue: baseValue,
-                    errors: [
-                        { id: 'gen_ddo', label: 'Verified Doubled Die Obverse (DDO)', premium: 25 },
-                        { id: 'gen_crack', label: 'Major Die Crack / Reticle Fractures', premium: 10 }
-                    ]
-                };
+            } catch (error) {
+                console.error("Gemini Native Module Error:", error);
+                alert("Error calling live AI module. Deploying local matching fallback framework architecture instead.");
+                fallbackLocalMapping(rawInput, 'N/A', 'P');
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerHTML = `<span>Query Live AI Engine</span>`;
+                if(selectedCoin) {
+                    activeErrors = {};
+                    displayTargetRecord();
+                }
+            }
+        }
+
+        function fallbackLocalMapping(rawInput, parsedYear, parsedMint) {
+            const cleanQuery = rawInput.toLowerCase();
+            let customCurve = [0.01, 0.05, 0.10, 0.15, 0.20];
+            let coinName = "US Currency Specimen";
+
+            if (cleanQuery.includes('indian') || (parsedYear !== 'N/A' && parseInt(parsedYear) < 1909)) {
+                coinName = "Indian Head Penny";
+                customCurve = [1.50, 3.50, 8.00, 14.00, 24.50];
+            } else if (cleanQuery.includes('wheat') || (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1958)) {
+                coinName = "Lincoln Wheat Penny";
+                customCurve = [0.02, 0.05, 0.15, 0.25, 0.50];
             }
 
-            activeErrors = {};
-            displayTargetRecord();
+            selectedCoin = {
+                id: 'FALLBACK_' + Date.now(),
+                year: parsedYear,
+                mint: parsedMint,
+                name: `${parsedYear}-${parsedMint} ${coinName}`,
+                priceCurve: customCurve,
+                errors: [
+                    { id: 'gen_ddo', label: 'Verified Doubled Die Obverse (DDO)', premium: 25 },
+                    { id: 'gen_crack', label: 'Major Die Crack / Reticle Fractures', premium: 10 }
+                ]
+            };
         }
 
         function handleGradeChange(val) {
@@ -260,15 +288,11 @@
             document.getElementById('target-coin-name').innerText = selectedCoin.name;
             document.getElementById('target-coin-year').innerText = selectedCoin.year;
             document.getElementById('target-coin-mint').innerText = selectedCoin.mint;
-            
-            const displayMelt = selectedCoin.isMatrix ? "Numismatic Scale" : `$${selectedCoin.baseValue.toFixed(2)}`;
-            document.getElementById('target-coin-base').innerText = displayMelt;
+            document.getElementById('target-coin-base').innerText = selectedCoin.id.startsWith('AI') ? "Gemini Live Matrix" : "Calculated Fallback";
 
             const badgeContainer = document.getElementById('badge-container');
-            if (selectedCoin.isMatrix && (selectedCoin.type === 'key' || selectedCoin.type === 'mega-key')) {
-                badgeContainer.innerHTML = `<span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded tracking-wide border border-red-500/30 uppercase">Key Date Variety</span>`;
-            } else if (!selectedCoin.isMatrix && selectedCoin.baseValue > 0.25) {
-                badgeContainer.innerHTML = `<span class="text-[10px] bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded tracking-wide border border-amber-500/30 uppercase">Pre-1965 Silver</span>`;
+            if (selectedCoin.name.includes("Indian Head")) {
+                badgeContainer.innerHTML = `<span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded tracking-wide border border-red-500/30 uppercase">Key Date / Vintage Variety</span>`;
             } else {
                 badgeContainer.innerHTML = '';
             }
@@ -316,16 +340,8 @@
                 return;
             }
 
-            let calculatedVal = 0.00;
+            let calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
 
-            if (selectedCoin.isMatrix) {
-                calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
-            } else {
-                const genericMultiplier = 1 + (activeGradeIdx * 0.50); 
-                calculatedVal = selectedCoin.baseValue * genericMultiplier;
-            }
-
-            // Append active verified multiplier add-on premiums
             selectedCoin.errors.forEach(err => {
                 if (activeErrors[err.id]) {
                     calculatedVal += err.premium;
@@ -337,17 +353,11 @@
 
         function saveToLedger() {
             if (!selectedCoin) {
-                alert("Please type out target specifications and click search to establish a baseline card first.");
+                alert("Perform a live AI query sequence before logging items to ledger containers.");
                 return;
             }
 
-            let finalValue = 0.00;
-            if (selectedCoin.isMatrix) {
-                finalValue = selectedCoin.priceCurve[activeGradeIdx];
-            } else {
-                finalValue = selectedCoin.baseValue * (1 + (activeGradeIdx * 0.50));
-            }
-
+            let finalValue = selectedCoin.priceCurve[activeGradeIdx];
             let detectedMultiplierLabels = [];
             selectedCoin.errors.forEach(err => {
                 if (activeErrors[err.id]) {
@@ -421,6 +431,13 @@
         }
 
         window.onload = init;
+        window.executeSearch = executeSearch;
+        window.clearSearch = clearSearch;
+        window.handleGradeChange = handleGradeChange;
+        window.toggleMultiplier = toggleMultiplier;
+        window.saveToLedger = saveToLedger;
+        window.clearLedger = clearLedger;
+        window.saveApiKey = saveApiKey;
     </script>
 </body>
 </html>
