@@ -31,7 +31,6 @@
             letter-spacing: 0.05em;
             margin-left: 0.5rem !important;
         }
-        /* Custom slider styling for iOS feel */
         input[type=range] {
             -webkit-appearance: none;
             width: 100%;
@@ -65,52 +64,12 @@
     <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-6">
         <div>
             <label class="font-bold">Year</label>
-            <select id="year-select" class="w-full mt-2"></select>
+            <select id="year-select" class="w-full mt-2" onchange="filterDenominations()"></select>
         </div>
 
         <div>
             <label class="font-bold">Denomination</label>
-            <select id="denom-select" class="w-full mt-2">
-                <option>Large Cent (1793–1857)</option>
-                <option>Flying Eagle Cent (1856–1858)</option>
-                <option>Indian Head Cent (1859–1909)</option>
-                <option>Lincoln Cent (1909–Present)</option>
-                <option>Two-Cent Piece (1864–1873)</option>
-                <option>Three-Cent Silver (1851–1873)</option>
-                <option>Three-Cent Nickel (1865–1889)</option>
-                <option>Shield Nickel (1866–1883)</option>
-                <option>Liberty Head Nickel (1883–1912)</option>
-                <option>Buffalo Nickel (1913–1938)</option>
-                <option>Jefferson Nickel (1938–Present)</option>
-                <option>Half Dime (1792–1873)</option>
-                <option>Bust Dime (1796–1837)</option>
-                <option>Seated Liberty Dime (1837–1891)</option>
-                <option>Barber Dime (1892–1916)</option>
-                <option>Mercury Dime (1916–1945)</option>
-                <option>Roosevelt Dime (1946–Present)</option>
-                <option>Twenty-Cent Piece (1875–1878)</option>
-                <option>Bust Quarter (1796–1838)</option>
-                <option>Seated Liberty Quarter (1838–1891)</option>
-                <option>Barber Quarter (1892–1916)</option>
-                <option>Standing Liberty Quarter (1916–1930)</option>
-                <option>Washington Quarter (1932–Present)</option>
-                <option>Bust Half Dollar (1794–1839)</option>
-                <option>Seated Liberty Half Dollar (1839–1891)</option>
-                <option>Barber Half Dollar (1892–1915)</option>
-                <option>Walking Liberty Half Dollar (1916–1947)</option>
-                <option>Franklin Half Dollar (1948–1963)</option>
-                <option>Kennedy Half Dollar (1964–Present)</option>
-                <option>Flowing Hair Dollar (1794–1795)</option>
-                <option>Draped Bust Dollar (1795–1804)</option>
-                <option>Seated Liberty Dollar (1840–1873)</option>
-                <option>Trade Dollar (1873–1885)</option>
-                <option>Morgan Dollar (1878–1904, 1921)</option>
-                <option>Peace Dollar (1921–1935, 2021–Present)</option>
-                <option>Eisenhower Dollar (1971–1978)</option>
-                <option>Susan B. Anthony Dollar (1979–1981, 1999)</option>
-                <option>Sacagawea/Native American Dollar (2000–Present)</option>
-                <option>American Innovation Dollar (2018–Present)</option>
-            </select>
+            <select id="denom-select" class="w-full mt-2"></select>
         </div>
 
         <div>
@@ -173,15 +132,69 @@
 
     <script>
         const yearSelect = document.getElementById('year-select');
+        const denomSelect = document.getElementById('denom-select');
         const gradeSlider = document.getElementById('grade-slider');
         const gradeVal = document.getElementById('grade-val');
+
+        const denominations = [
+            { name: "Large Cent", start: 1793, end: 1857 },
+            { name: "Flying Eagle Cent", start: 1856, end: 1858 },
+            { name: "Indian Head Cent", start: 1859, end: 1909 },
+            { name: "Lincoln Cent", start: 1909, end: 2026 },
+            { name: "Two-Cent Piece", start: 1864, end: 1873 },
+            { name: "Three-Cent Silver", start: 1851, end: 1873 },
+            { name: "Three-Cent Nickel", start: 1865, end: 1889 },
+            { name: "Shield Nickel", start: 1866, end: 1883 },
+            { name: "Liberty Head Nickel", start: 1883, end: 1912 },
+            { name: "Buffalo Nickel", start: 1913, end: 1938 },
+            { name: "Jefferson Nickel", start: 1938, end: 2026 },
+            { name: "Half Dime", start: 1792, end: 1873 },
+            { name: "Bust Dime", start: 1796, end: 1837 },
+            { name: "Seated Liberty Dime", start: 1837, end: 1891 },
+            { name: "Barber Dime", start: 1892, end: 1916 },
+            { name: "Mercury Dime", start: 1916, end: 1945 },
+            { name: "Roosevelt Dime", start: 1946, end: 2026 },
+            { name: "Twenty-Cent Piece", start: 1875, end: 1878 },
+            { name: "Bust Quarter", start: 1796, end: 1838 },
+            { name: "Seated Liberty Quarter", start: 1838, end: 1891 },
+            { name: "Barber Quarter", start: 1892, end: 1916 },
+            { name: "Standing Liberty Quarter", start: 1916, end: 1930 },
+            { name: "Washington Quarter", start: 1932, end: 2026 },
+            { name: "Bust Half Dollar", start: 1794, end: 1839 },
+            { name: "Seated Liberty Half Dollar", start: 1839, end: 1891 },
+            { name: "Barber Half Dollar", start: 1892, end: 1915 },
+            { name: "Walking Liberty Half Dollar", start: 1916, end: 1947 },
+            { name: "Franklin Half Dollar", start: 1948, end: 1963 },
+            { name: "Kennedy Half Dollar", start: 1964, end: 2026 },
+            { name: "Flowing Hair Dollar", start: 1794, end: 1795 },
+            { name: "Draped Bust Dollar", start: 1795, end: 1804 },
+            { name: "Seated Liberty Dollar", start: 1840, end: 1873 },
+            { name: "Trade Dollar", start: 1873, end: 1885 },
+            { name: "Morgan Dollar", start: 1878, end: 1921 },
+            { name: "Peace Dollar", start: 1921, end: 2026 },
+            { name: "Eisenhower Dollar", start: 1971, end: 1978 },
+            { name: "Susan B. Anthony Dollar", start: 1979, end: 1999 },
+            { name: "Sacagawea/Native American Dollar", start: 2000, end: 2026 },
+            { name: "American Innovation Dollar", start: 2018, end: 2026 }
+        ];
+
+        function filterDenominations() {
+            const year = parseInt(yearSelect.value);
+            denomSelect.innerHTML = '';
+            denominations.filter(d => year >= d.start && year <= d.end).forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.name; opt.innerHTML = d.name;
+                denomSelect.appendChild(opt);
+            });
+        }
 
         for (let i = 2026; i >= 1800; i--) {
             const opt = document.createElement('option');
             opt.value = i; opt.innerHTML = i;
             yearSelect.appendChild(opt);
         }
-
+        
+        filterDenominations();
         gradeSlider.oninput = function() { gradeVal.innerText = this.value; }
 
         async function runQuery() { 
@@ -199,7 +212,7 @@
             const payload = {
                 "contents": [{
                     "parts": [{
-                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} with a grade of ${gradeSlider.value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. If no collector market exists, state 'Market value not yet established'.`
+                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${yearSelect.value} ${document.getElementById('mint-select').value} ${denomSelect.value} with a grade of ${gradeSlider.value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. If no collector market exists, state 'Market value not yet established'.`
                     }]
                 }]
             };
