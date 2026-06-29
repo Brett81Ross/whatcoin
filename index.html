@@ -56,9 +56,8 @@
 <body class="p-6 flex flex-col items-center font-sans antialiased">
 
     <div class="text-center my-8">
-        <img src="logo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="w-64 h-64 mx-auto mb-6 rounded-3xl object-contain">
-        <h1 class="text-4xl font-black tracking-tighter text-white">WhatCoin™</h1>
-        <p class="text-sm uppercase tracking-[0.4em] text-[#8e8e93] mt-2">Numismatic Matrix Lab</p>
+        <!-- Logo fits container -->
+        <img src="logo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="w-72 h-72 mx-auto rounded-3xl object-cover">
     </div>
 
     <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-6">
@@ -224,7 +223,6 @@
                 const data = await response.json();
                 const fullText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No data.";
                 
-                // Splitting output if possible (simple heuristic)
                 const parts = fullText.split('\n\n');
                 valText.innerText = parts[0];
                 detailsText.innerText = parts.slice(1).join('\n\n') || "No further details available.";
