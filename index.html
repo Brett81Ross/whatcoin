@@ -25,7 +25,7 @@
         >
     </div>
 
-    <!-- Structured Parameter Controls (Restructured per fdbf9790-1252-497f-94fc-b2bb3a02b8ca) -->
+    <!-- Structured Parameter Controls -->
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl space-y-4">
         
         <!-- 1. Year -->
@@ -48,25 +48,17 @@
             </select>
         </div>
 
-        <!-- 3. Tone (Grade Scale Evaluation) -->
+        <!-- 3. Tone (Updated with Red and Yellow Progression Spectrum) -->
         <div>
-            <div class="flex justify-between items-center mb-1">
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Tone / Condition Grade</label>
-                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">20 - Fine (F)</span>
-            </div>
-            <input 
-                id="grade-slider" 
-                type="range" 
-                min="1" 
-                max="70" 
-                value="20" 
-                class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]"
-                oninput="updateGradeLabel(this.value)"
-            >
-            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-                <span>PO-1 (Poor)</span>
-                <span>MS-70 (Uncirculated)</span>
-            </div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Tone (Surface Toning)</label>
+            <select id="tone-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                <option value="Untoned / Blast White">Untoned ("Blast White")</option>
+                <option value="Desirable Toning (Vibrant Rainbow/Crescent/Target)">Desirable Toning (Rainbow/Crescent/Target)</option>
+                <option value="Desirable Toning (Gold/Yellow Tones)">Desirable Toning (Gold / Yellow Tones)</option>
+                <option value="Desirable Toning (Red/Magenta Tones)">Desirable Toning (Red / Magenta Tones)</option>
+                <option value="Undesirable Toning (Dark/Splotchy/Blackish)">Undesirable Toning (Dark/Splotchy/Damage)</option>
+                <option value="Artificial Toning (Crayon Colors/Film Residue)">Artificial Toning (Reject/Alteration)</option>
+            </select>
         </div>
 
         <!-- 4. Mint -->
@@ -79,6 +71,23 @@
                 <option value="W (West Point)">W (West Point)</option>
                 <option value="No Mint Mark">No Mint Mark</option>
             </select>
+        </div>
+
+        <!-- Condition Grade Map Input -->
+        <div>
+            <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Condition Numeric Grade</label>
+                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">MS-63 (Choice Uncirculated)</span>
+            </div>
+            <input 
+                id="grade-slider" 
+                type="range" 
+                min="1" 
+                max="70" 
+                value="63" 
+                class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]"
+                oninput="updateGradeLabel(this.value)"
+            >
         </div>
 
         <!-- Action Matrix -->
@@ -121,7 +130,7 @@
         </div>
     </div>
 
-    <!-- Live Appraisal Valuation Panel (Back to the bottom anchor placement) -->
+    <!-- Live Appraisal Valuation Panel -->
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center shadow-inner">
         <div id="display-value" class="text-5xl font-black text-white">$0.00</div>
     </div>
@@ -154,7 +163,8 @@
             const num = parseInt(val);
             let label = "Circulated";
             
-            if (num >= 60) label = `MS-${num} (Uncirculated)`;
+            if (num >= 65) label = `MS-${num} (Gem Uncirculated)`;
+            else if (num >= 60) label = `MS-${num} (Uncirculated)`;
             else if (num >= 50) label = `AU-${num} (About Uncirculated)`;
             else if (num >= 40) label = `EF-${num} (Extremely Fine)`;
             else if (num >= 20) label = `VF-${num} (Very Fine)`;
@@ -170,6 +180,7 @@
                 denomination: document.getElementById('denom-select').options[document.getElementById('denom-select').selectedIndex].text,
                 year: document.getElementById('year-select').value,
                 mint: document.getElementById('mint-select').value,
+                tone: document.getElementById('tone-select').value,
                 grade: document.getElementById('grade-slider').value
             };
         }
@@ -230,9 +241,9 @@
             multiplierBtn.disabled = true;
             multiplierBtn.innerText = "...";
             targetDisplay.classList.remove('hidden');
-            targetText.innerText = "Querying varieties database...";
+            targetText.innerText = "Querying varieties and toning factors database...";
 
-            const promptText = `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`;
+            const promptText = `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Surface toning state is classified as: ${config.tone}. Provide a clean bulleted list detailing how this context changes baseline evaluation.`;
 
             try {
                 let textResult = "";
@@ -283,7 +294,7 @@
             else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
             else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
 
-            const promptText = `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}.`;
+            const promptText = `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}, Toning Profile: ${config.tone}. Account for premium adjustments due to toning value parameters (e.g. higher value premium if desirable rainbow or distinct red/gold surfaces, steep discount or rejection if artificial or splotchy damage).`;
             
             const strictSchema = {
                 type: "OBJECT",
