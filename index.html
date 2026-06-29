@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dope House Coin Labs™ - Autonomous Numismatic Suite</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #0b0f17; color: #f0f4f8; }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto font-sans antialiased">
 
-    <!-- Brand Header updated to use dopehouselogo.png, inspired by 1000037467.png -->
+    <!-- Branding Section -->
     <div class="text-center my-4 border-b border-gray-900 pb-5 flex flex-col items-center">
         <div class="w-full max-w-[340px] mb-4">
             <img src="dopehouselogo.png" alt="Dope House Coin Labs Logo" class="w-full h-auto rounded-xl shadow-2xl border border-gray-800">
         </div>
         <h1 class="text-2xl font-black tracking-tight text-white uppercase font-mono">Dope House Coin Labs<span class="text-xs text-amber-500 align-super font-bold">™</span></h1>
-        <p class="text-xs text-amber-400 mt-1 uppercase tracking-widest font-semibold">Autonomous Valuation Engine & Verification Suite</p>
     </div>
 
     <!-- API Credentials Container -->
@@ -26,205 +25,79 @@
         <input 
             id="api-key-input" 
             type="password" 
-            placeholder="Enter API Key (AIzaSy...)" 
+            placeholder="Enter your API Key" 
             class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
         >
     </div>
 
-    <!-- Structured Parameter Controls -->
+    <!-- Controls -->
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl space-y-4">
-        
-        <!-- 1. Year -->
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Year</label>
-            <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-            </select>
+            <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54]"></select>
         </div>
-
-        <!-- 2. Denomination -->
+        
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Denomination</label>
-            <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                <option value="1c">Cent (Penny)</option>
-                <option value="5c">Nickel</option>
-                <option value="10c">Dime</option>
+            <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54]">
+                <option value="1c">Cent</option>
                 <option value="25c" selected>Quarter</option>
-                <option value="50c">Half Dollar</option>
-                <option value="11">Dollar Coin</option>
             </select>
         </div>
 
-        <!-- 3. Tone & Surface Authentication -->
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Tone & Surface Authentication</label>
-            <select id="tone-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                <option value="Untoned / Blast White">Untoned ("Blast White")</option>
-                <option value="Natural Toning: Vibrant Rainbow/Crescent/Target (Settles in recesses, breaks gently around raised details)">Natural Toning: Rainbow/Crescent/Target</option>
-                <option value="Natural Toning: Gold/Yellow Tones (Chemical bonding over decades)">Natural Toning: Gold / Yellow Tones</option>
-                <option value="Natural Toning: Red/Magenta Tones (Retains color/depth under vertical halogen lighting)">Natural Toning: Red / Magenta Tones</option>
-                <option value="Undesirable Toning (Dark/Splotchy/Environmentally Damaged)">Undesirable Toning: Dark/Splotchy/Damage</option>
-                <option value="Artificial Toning: Altered Crayon Colors (Uniform bleeding, bullseye shapes, or floating surface film)">Artificial Toning: Counterfeit/Altered Colors (Reject)</option>
-            </select>
-        </div>
-
-        <!-- 4. Mint Mark -->
-        <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Mint Mark</label>
-            <select id="mint-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                <option value="P (Philadelphia)">P (Philadelphia)</option>
-                <option value="D (Denver)">D (Denver)</option>
-                <option value="S (San Francisco)">S (San Francisco)</option>
-                <option value="W (West Point)">W (West Point)</option>
-                <option value="No Mint Mark">No Mint Mark</option>
-            </select>
-        </div>
-
-        <!-- 5. Advanced Material Properties -->
-        <div class="border-t border-gray-800 pt-3 space-y-3">
-            <label class="block text-xs font-bold uppercase tracking-wider text-blue-400">Advanced Material Properties</label>
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Striking/Die State</label>
-                    <select id="strike-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                        <option value="Standard Strike">Standard Strike</option>
-                        <option value="Broadstrike Error">Broadstrike Error</option>
-                        <option value="Cud Error">Cud Die Error</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">Surface Alteration</label>
-                    <select id="surface-select" class="w-full bg-[#182032] rounded-lg p-2 text-xs text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                        <option value="Original Surfaces">Original Surfaces</option>
-                        <option value="Bag Marks Present">Bag Marks Present</option>
-                        <option value="Whizzed / Cleaned (Altered)">Whizzed / Cleaned (Altered)</option>
-                        <option value="Cull / Heavily Damaged">Cull / Heavily Damaged</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <!-- Condition Grade -->
-        <div>
-            <div class="flex justify-between items-center mb-1">
-                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500">Condition Numeric Grade</label>
-                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">MS-63</span>
-            </div>
-            <input id="grade-slider" type="range" min="1" max="70" value="63" class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]" oninput="updateGradeLabel(this.value)">
-        </div>
-
-        <div class="grid grid-cols-5 gap-2 pt-2">
-            <button id="multiplier-btn" onclick="fetchMultipliers()" class="col-span-2 bg-[#1b253b] hover:bg-[#23304d] text-amber-400 border border-amber-500/30 font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">Multipliers</button>
-            <button id="search-btn" onclick="executeSearch()" class="col-span-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">Query Live AI</button>
-        </div>
+        <button id="search-btn" onclick="executeSearch()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-lg text-xs uppercase tracking-wider transition-colors">Query Live AI</button>
     </div>
 
-    <!-- Output Panels -->
+    <!-- Status and Output -->
     <div id="status-card" class="bg-[#221616] rounded-xl p-4 mb-4 border border-red-500/30 hidden">
         <p id="status-content" class="text-xs text-red-400 font-medium font-mono"></p>
-    </div>
-
-    <div id="multiplier-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg hidden">
-        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Target Defect Anomalies & Varieties</h4>
-        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed"></p>
-    </div>
-
-    <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden space-y-2">
-        <div>
-            <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Coin Specification</label>
-            <h3 id="target-coin-name" class="text-base font-bold text-white">---</h3>
-        </div>
     </div>
 
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center shadow-inner">
         <div id="display-value" class="text-5xl font-black text-white">$0.00</div>
     </div>
 
-    <script type="importmap">
-      { "imports": { "@google/genai": "https://esm.run/@google/genai" } }
-    </script>
-    <script type="module">
-        import { GoogleGenAI } from '@google/genai';
-        window.GoogleGenAIInstance = GoogleGenAI;
-    </script>
-
     <script>
-        let activeSearchId = 0;
-        let activeMultiplierId = 0;
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const yearSelect = document.getElementById('year-select');
-            for(let y = 2026; y >= 1800; y--) {
-                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
-            }
-            yearSelect.value = "1972";
-        });
-
-        function updateGradeLabel(val) {
-            const badge = document.getElementById('grade-badge');
-            badge.innerText = `MS-${val}`;
+        const yearSelect = document.getElementById('year-select');
+        for(let y = 2026; y >= 1800; y--) {
+            yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
         }
-
-        function getCompiledSelection() {
-            return {
-                denomination: document.getElementById('denom-select').options[document.getElementById('denom-select').selectedIndex].text,
-                year: document.getElementById('year-select').value,
-                mint: document.getElementById('mint-select').value,
-                tone: document.getElementById('tone-select').value,
-                strike: document.getElementById('strike-select').value,
-                surface: document.getElementById('surface-select').value,
-                grade: document.getElementById('grade-slider').value
-            };
-        }
-
-        async function fetchMultipliers() {
-            const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) return;
-            const config = getCompiledSelection();
-            const targetText = document.getElementById('multiplier-content');
-            document.getElementById('multiplier-card').classList.remove('hidden');
-            targetText.innerText = "Querying...";
-            
-            const promptText = `Identify varieties, key dates, errors, and physical defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Surface Toning: ${config.tone}. Striking Profile: ${config.strike}. Surface Features: ${config.surface}. Provide a clean bulleted explanation.`;
-
-            try {
-                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                const response = await ai.models.generateContent({ model: "gemini-2.5-flash", contents: promptText });
-                targetText.innerText = response.text;
-            } catch (error) {
-                targetText.innerText = "Error fetching data.";
-            }
-        }
+        yearSelect.value = "1972";
 
         async function executeSearch() {
             const apiKey = document.getElementById('api-key-input').value.trim();
-            if (!apiKey) return;
-            const config = getCompiledSelection();
-            const promptText = `Analyze market transaction values for: ${config.year} ${config.mint} ${config.denomination}, Grade ${config.grade}/70. Toning: ${config.tone}.`;
-            
+            const statusCard = document.getElementById('status-card');
+            const statusContent = document.getElementById('status-content');
+            const displayValue = document.getElementById('display-value');
+
+            if (!apiKey) {
+                statusContent.innerText = "Error: API Key Required.";
+                statusCard.classList.remove('hidden');
+                return;
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+            const prompt = `Analyze market value for a ${document.getElementById('year-select').value} ${document.getElementById('denom-select').value} coin. Return only the numerical value as a dollar amount (e.g., 5.00).`;
+
             try {
-                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash",
-                    contents: promptText,
-                    config: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                name: { type: "STRING" },
-                                price: { type: "NUMBER" }
-                            },
-                            required: ["name", "price"]
-                        }
-                    }
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                const data = JSON.parse(response.text);
-                document.getElementById('target-coin-name').innerText = data.name;
-                document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
-                document.getElementById('target-specimen-card').classList.remove('hidden');
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+
+                const text = data.candidates[0].content.parts[0].text;
+                displayValue.innerText = `$${parseFloat(text.replace(/[^0-9.]/g, '')).toFixed(2)}`;
+                statusCard.classList.add('hidden');
             } catch (error) {
-                document.getElementById('status-content').innerText = "API Error.";
-                document.getElementById('status-card').classList.remove('hidden');
+                statusContent.innerText = "API Error: " + error.message;
+                statusCard.classList.remove('hidden');
             }
         }
     </script>
