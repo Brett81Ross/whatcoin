@@ -70,7 +70,7 @@
             id="grade-slider" 
             type="range" 
             min="0" 
-            max="4" 
+            max="5" 
             value="1" 
             oninput="handleGradeChange(this.value)"
             class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500"
@@ -81,6 +81,7 @@
             <span>EF-40</span>
             <span>AU-58</span>
             <span>MS-63</span>
+            <span class="text-amber-400 font-black">PR-65</span>
         </div>
     </div>
 
@@ -120,17 +121,17 @@
 
     <!-- App Configuration Logic Engine -->
     <script>
-        // High-fidelity pricing database structure mapping realistic price curves across standard coin conditions
+        // Matrix price arrays updated to accommodate 6 slots: [G-4, F-12, EF-40, AU-58, MS-63, PR-65]
         const NUMISMATIC_PRICING_MATRIX = {
             // Lincoln Wheat Pennies
-            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [60.00, 75.00, 95.00, 135.00, 260.00] },
-            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [650.00, 850.00, 1100.00, 1450.00, 2400.00] },
-            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [90.00, 115.00, 140.00, 190.00, 375.00] },
-            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [150.00, 220.00, 340.00, 620.00, 1650.00] },
-            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [450.00, 650.00, 900.00, 1700.00, 4800.00] },
+            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [60.00, 75.00, 95.00, 135.00, 260.00, 550.00] },
+            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [650.00, 850.00, 1100.00, 1450.00, 2400.00, 6000.00] },
+            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [90.00, 115.00, 140.00, 190.00, 375.00, 800.00] },
+            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [150.00, 220.00, 340.00, 620.00, 1650.00, 3200.00] },
+            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [450.00, 650.00, 900.00, 1700.00, 4800.00, 9500.00] },
             
             // Silver Half Dollars
-            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [4.00, 6.00, 9.00, 14.00, 38.00] }
+            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [4.00, 6.00, 9.00, 14.00, 38.00, 75.00] }
         };
 
         const CONDITION_TIERS = [
@@ -138,7 +139,8 @@
             { idx: 1, code: "F-12", label: "Fine (F-12)", desc: "Moderate wear on all deep design elements; features distinct." },
             { idx: 2, code: "EF-40", label: "Extra Fine (EF-40)", desc: "Slight wear on high spots. All design details crisp and sharp." },
             { idx: 3, code: "AU-58", label: "About Uncirculated (AU-58)", desc: "Barely perceptible trace wear on high points; significant mint luster." },
-            { idx: 4, code: "MS-63", label: "Mint State (MS-63)", desc: "Uncirculated. Full original mint frost with minor contact marks." }
+            { idx: 4, code: "MS-63", label: "Mint State (MS-63)", desc: "Uncirculated. Full original mint frost with minor contact marks." },
+            { idx: 5, code: "PR-65", label: "Proof (PR-65)", desc: "Specially struck specimen with highly polished mirror fields and frosted details." }
         ];
 
         let selectedCoin = null;
@@ -239,6 +241,14 @@
             const tier = CONDITION_TIERS[activeGradeIdx];
             document.getElementById('grade-label').innerText = tier.label;
             document.getElementById('grade-desc').innerText = tier.desc;
+            
+            // Adjust label visual colors if it is a Proof strike
+            if (activeGradeIdx === 5) {
+                document.getElementById('grade-label').className = "text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shadow-sm animate-pulse";
+            } else {
+                document.getElementById('grade-label').className = "text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded";
+            }
+            
             calculateAppraisal();
         }
 
@@ -305,11 +315,11 @@
             let calculatedVal = 0.00;
 
             if (selectedCoin.isMatrix) {
-                // Extract precise historical curve index valuation point
+                // Pull data directly out of updated index array sequence 
                 calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
             } else {
-                // Scale generic item valuation depending on selected physical state index multipliers
-                const genericMultiplier = 1 + (activeGradeIdx * 0.75); 
+                // Scales generic fallback rules up significantly if set to Proof setting
+                const genericMultiplier = activeGradeIdx === 5 ? 5.5 : 1 + (activeGradeIdx * 0.75); 
                 calculatedVal = selectedCoin.baseValue * genericMultiplier;
             }
 
@@ -333,7 +343,7 @@
             if (selectedCoin.isMatrix) {
                 finalValue = selectedCoin.priceCurve[activeGradeIdx];
             } else {
-                finalValue = selectedCoin.baseValue * (1 + (activeGradeIdx * 0.75));
+                finalValue = selectedCoin.baseValue * (activeGradeIdx === 5 ? 5.5 : 1 + (activeGradeIdx * 0.75));
             }
 
             let detectedMultiplierLabels = [];
