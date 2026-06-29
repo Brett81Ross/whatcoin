@@ -33,7 +33,7 @@
             class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
             onchange="saveApiKey(this.value)"
         >
-        <p class="text-[10px] text-gray-500 mt-1.5">Stored securely inside local device storage vectors.</p>
+        <p class="text-[10px] text-gray-500 mt-1.5">Stored securely inside local device storage vectors. Never pushed to Git.</p>
     </div>
 
     <!-- Manual Entry Search Panel -->
@@ -67,7 +67,7 @@
         <div class="flex gap-4 mt-2 text-xs text-gray-400">
             <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
             <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
-            <div>Source Feed: <span id="target-coin-base" class="text-green-400 font-semibold">Gemini 3.5 Live</span></div>
+            <div>Source Feed: <span id="target-coin-base" class="text-green-400 font-semibold">Gemini Live</span></div>
         </div>
     </div>
 
@@ -140,7 +140,6 @@
     </script>
     <script type="module">
         import { GoogleGenAI } from '@google/gen-ai';
-
         window.GoogleGenAIInstance = GoogleGenAI;
     </script>
 
@@ -191,13 +190,12 @@
                 if (/\b(d|denver)\b/.test(rawInput.toLowerCase())) parsedMint = 'D';
                 if (/\b(s|san francisco)\b/.test(rawInput.toLowerCase())) parsedMint = 'S';
 
-                // Initialize Google Gen AI module dynamically inside the window structure
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
                 
                 const systemInstruction = `You are an expert numismatic grading and valuation engine. 
                 Analyze the user's asset text string input and return real, current estimated market auction data values for that coin.
                 You MUST return your response strictly as a single JSON object. Do not include markdown code block styling or text wrapping. 
-                The pricing data array array MUST have exactly 5 elements corresponding to these index points:
+                The pricing data array MUST have exactly 5 elements corresponding to these index points:
                 Index 0: Bad (0-3) condition value
                 Index 1: Good (4-6) condition value
                 Index 2: Very Good (8) condition value
@@ -283,6 +281,10 @@
             document.getElementById('grade-desc').innerText = tier.desc;
             calculateAppraisal();
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            init();
+        });
 
         function displayTargetRecord() {
             document.getElementById('target-coin-name').innerText = selectedCoin.name;
@@ -430,7 +432,6 @@
             }
         }
 
-        window.onload = init;
         window.executeSearch = executeSearch;
         window.clearSearch = clearSearch;
         window.handleGradeChange = handleGradeChange;
