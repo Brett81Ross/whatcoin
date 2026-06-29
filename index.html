@@ -9,6 +9,7 @@
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
         .glass-panel { background: rgba(17, 22, 34, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         select, input { background-color: #0b0f17 !important; color: #fff !important; }
+        
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
             50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.7); }
@@ -33,11 +34,19 @@
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Denomination</label>
             <select id="denom-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
-                <option>Roosevelt Dime</option><option>Mercury Dime</option><option>Barber Dime</option><option>Seated Liberty Dime</option>
-                <option>Lincoln Cent</option><option>Indian Head Penny</option>
-                <option>Jefferson Nickel</option><option>Buffalo Nickel</option><option>Shield Nickel</option>
-                <option>Washington Quarter</option><option>Standing Liberty Quarter</option>
-                <option>Kennedy Half Dollar</option><option>Walking Liberty Half Dollar</option>
+                <option>Roosevelt Dime (Modern 10¢)</option>
+                <option>Mercury Dime (Vintage 10¢)</option>
+                <option>Barber Dime (Antique 10¢)</option>
+                <option>Seated Liberty Dime (Antique 10¢)</option>
+                <option>Lincoln Cent (Common Penny)</option>
+                <option>Indian Head Penny (Old Penny)</option>
+                <option>Jefferson Nickel (Modern 5¢)</option>
+                <option>Buffalo Nickel (Classic 5¢)</option>
+                <option>Shield Nickel (Early 5¢)</option>
+                <option>Washington Quarter (Modern 25¢)</option>
+                <option>Standing Liberty Quarter (Vintage 25¢)</option>
+                <option>Kennedy Half Dollar (Modern 50¢)</option>
+                <option>Walking Liberty Half Dollar (Classic 50¢)</option>
             </select>
         </div>
 
@@ -71,7 +80,6 @@
             QUERY MARKET VALUATION
         </button>
 
-        <!-- API Key moved to the bottom -->
         <div class="pt-4 mt-4 border-t border-white/5">
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Gemini API Key</label>
             <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-mono shadow-inner">
