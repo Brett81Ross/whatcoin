@@ -69,19 +69,21 @@
 
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                const response = await ai.models.generateContent({
-                    model: 'gemini-1.5-flash',
-                    contents: `Analyze coin: "${rawInput}". Return JSON: {"name": "...", "priceCurve": [0,0,0,0,0]}`,
-                    config: { responseMimeType: "application/json" }
+                // Updated to gemini-3.1-flash-lite
+                const model = ai.getGenerativeModel({ model: "gemini-3.1-flash-lite" });
+
+                const result = await model.generateContent({
+                    contents: `Analyze coin: "${rawInput}". Return JSON only: {"name": "Example Coin", "price": 0.00}`,
+                    generationConfig: { responseMimeType: "application/json" }
                 });
 
-                const data = JSON.parse(response.text);
+                const data = JSON.parse(result.response.text());
                 document.getElementById('target-coin-name').innerText = data.name;
-                document.getElementById('display-value').innerText = `$${data.priceCurve[1].toFixed(2)}`;
+                document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
-                console.error(error);
-                alert("AI Error. Check your key validity in Google AI Studio.");
+                console.error("AI Error Details:", error);
+                alert("AI Error. Ensure gemini_api_key_3 is valid for gemini-3.1-flash-lite.");
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerText = "Query Live AI Engine";
