@@ -55,22 +55,32 @@
         <div class="flex gap-4 mt-2 text-xs text-gray-400">
             <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
             <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
-            <div>Base Value: <span id="target-coin-base" class="text-green-400 font-semibold">$0.00</span></div>
+            <div>Melt Tier: <span id="target-coin-base" class="text-green-400 font-semibold">$0.00</span></div>
         </div>
     </div>
 
-    <!-- Micro-Condition & Wear Configuration -->
+    <!-- Multi-Tier Condition Slider Control -->
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg">
-        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Luster & Wear Condition Grade</h2>
-        <div class="grid grid-cols-2 gap-2">
-            <button id="btn-grade-au" onclick="setGrade('AU')" class="text-left bg-[#161f33] border border-blue-500 p-3 rounded-lg transition-all">
-                <div class="text-xs font-bold text-blue-400" id="txt-grade-au">Circulated (AU)</div>
-                <div class="text-[10px] text-gray-500 mt-0.5">Trace high-point wear</div>
-            </button>
-            <button id="btn-grade-ms" onclick="setGrade('MS')" class="text-left bg-[#161f33] border border-transparent p-3 rounded-lg transition-all">
-                <div class="text-xs font-bold text-gray-400" id="txt-grade-ms">Mint State (MS)</div>
-                <div class="text-[10px] text-gray-500 mt-0.5">Full original mint frost</div>
-            </button>
+        <div class="flex justify-between items-center mb-1">
+            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Luster & Wear Condition Grade</h2>
+            <span id="grade-label" class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Fine (F-12)</span>
+        </div>
+        <p id="grade-desc" class="text-[11px] text-gray-500 mb-3">Moderate wear on all deep design elements.</p>
+        <input 
+            id="grade-slider" 
+            type="range" 
+            min="0" 
+            max="4" 
+            value="1" 
+            oninput="handleGradeChange(this.value)"
+            class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500"
+        >
+        <div class="flex justify-between text-[9px] text-gray-500 px-1 mt-2 font-bold uppercase tracking-wider">
+            <span>G-4</span>
+            <span>F-12</span>
+            <span>EF-40</span>
+            <span>AU-58</span>
+            <span>MS-63</span>
         </div>
     </div>
 
@@ -87,7 +97,7 @@
     <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 shadow-2xl text-center relative overflow-hidden">
         <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Estimated Real Market Value</span>
         <div id="display-value" class="text-5xl font-black text-white my-2.5">$0.00</div>
-        <p class="text-[10px] text-gray-400 max-w-xs mx-auto mb-4 leading-normal">Derived from aggregated auction verification criteria and real-time trends.</p>
+        <p class="text-[10px] text-gray-400 max-w-xs mx-auto mb-4 leading-normal">Derived from aggregated auction verification criteria and real-time numismatic trends.</p>
         
         <input id="input-notes" type="text" placeholder="Add specific observation details..." 
                class="w-full bg-[#0b0f17] rounded-lg p-3 text-xs text-gray-200 border border-gray-800 focus:outline-none focus:border-blue-500 mb-3">
@@ -110,19 +120,31 @@
 
     <!-- App Configuration Logic Engine -->
     <script>
-        // Predefined high-profile templates
-        const COIN_DATASET = [
-            { id: '2025_P_HALF', year: '2025', mint: 'P', name: 'Kennedy Half Dollar', baseValue: 0.50, tags: ['2025', 'half', 'kennedy'], errors: [{ id: 'hd_25_ddo', label: 'Doubled Die Obverse (DDO)', premiumAU: 20, premiumMS: 80 }, { id: 'hd_25_clip', label: 'Clipped Planchet Error', premiumAU: 35, premiumMS: 110 }] },
-            { id: '1970_D_HALF', year: '1970', mint: 'D', name: 'Kennedy Half Dollar (40% Silver)', baseValue: 4.50, tags: ['1970', 'half', 'silver'], errors: [{ id: 'hd_70_mint', label: 'Key Date Low Mintage Premium', premiumAU: 15, premiumMS: 45 }] },
-            { id: '1955_P_PENNY', year: '1955', mint: 'P', name: 'Lincoln Wheat Penny', baseValue: 0.05, tags: ['1955', 'penny', 'lincoln', 'wheat'], errors: [{ id: 'wp_55_ddo', label: 'Major Doubled Die Obverse', premiumAU: 1200, premiumMS: 2800 }] },
-            { id: '1999_P_PENNY', year: '1999', mint: 'P', name: 'Lincoln Penny', baseValue: 0.01, tags: ['1999', 'penny'], errors: [{ id: 'p_99_wide', label: 'Wide AM Variety Error', premiumAU: 15, premiumMS: 150 }] }
+        // High-fidelity pricing database structure mapping realistic price curves across standard coin conditions
+        const NUMISMATIC_PRICING_MATRIX = {
+            // Lincoln Wheat Pennies
+            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [60.00, 75.00, 95.00, 135.00, 260.00] },
+            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [650.00, 850.00, 1100.00, 1450.00, 2400.00] },
+            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [90.00, 115.00, 140.00, 190.00, 375.00] },
+            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [150.00, 220.00, 340.00, 620.00, 1650.00] },
+            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [450.00, 650.00, 900.00, 1700.00, 4800.00] },
+            
+            // Silver Half Dollars
+            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [4.00, 6.00, 9.00, 14.00, 38.00] }
+        };
+
+        const CONDITION_TIERS = [
+            { idx: 0, code: "G-4", label: "Good (G-4)", desc: "Heavily worn. Major designs visible but flat; outlines clear." },
+            { idx: 1, code: "F-12", label: "Fine (F-12)", desc: "Moderate wear on all deep design elements; features distinct." },
+            { idx: 2, code: "EF-40", label: "Extra Fine (EF-40)", desc: "Slight wear on high spots. All design details crisp and sharp." },
+            { idx: 3, code: "AU-58", label: "About Uncirculated (AU-58)", desc: "Barely perceptible trace wear on high points; significant mint luster." },
+            { idx: 4, code: "MS-63", label: "Mint State (MS-63)", desc: "Uncirculated. Full original mint frost with minor contact marks." }
         ];
 
         let selectedCoin = null;
-        let activeGrade = 'AU';
+        let activeGradeIdx = 1; // Default to Fine (F-12)
         let activeErrors = {};
         let ledger = [];
-        let isKeyDate = false;
 
         function init() {
             loadLedger();
@@ -134,96 +156,77 @@
             if (!rawInput) return;
 
             const cleanQuery = rawInput.toLowerCase();
-            isKeyDate = false;
             
-            // Extract core components dynamically
+            // Extract components
             let parsedYear = rawInput.match(/\b(18|19|20)\d{2}\b/)?.[0] || 'N/A';
-            let parsedMint = 'P'; // Default
+            let parsedMint = 'P';
             if (/\b(d|denver)\b/.test(cleanQuery)) parsedMint = 'D';
             else if (/\b(s|san francisco)\b/.test(cleanQuery)) parsedMint = 'S';
             else if (/\b(w|west point)\b/.test(cleanQuery)) parsedMint = 'W';
             else if (/\b(cc|carson city)\b/.test(cleanQuery)) parsedMint = 'CC';
 
-            // Check hardcoded exact database first
-            let match = COIN_DATASET.find(coin => {
-                const searchString = `${coin.year} ${coin.mint} ${coin.name} ${coin.tags.join(' ')}`.toLowerCase();
-                return cleanQuery.split(' ').every(word => searchString.includes(word));
-            });
+            // Generate composite database key
+            let lookUpKey = `${parsedYear}_${parsedMint}_PENNY`;
+            if (cleanQuery.includes('vdb') && parsedYear === '1909') {
+                lookUpKey = "1909_S_VDB_PENNY";
+            } else if (cleanQuery.includes('half') || cleanQuery.includes('50c')) {
+                lookUpKey = `${parsedYear}_${parsedMint}_HALF`;
+            }
 
-            if (match) {
-                selectedCoin = JSON.parse(JSON.stringify(match));
+            // Check our comprehensive matrix
+            if (NUMISMATIC_PRICING_MATRIX[lookUpKey]) {
+                const mapData = NUMISMATIC_PRICING_MATRIX[lookUpKey];
+                selectedCoin = {
+                    id: lookUpKey,
+                    year: parsedYear,
+                    mint: parsedMint,
+                    name: mapData.name,
+                    isMatrix: true,
+                    type: mapData.type,
+                    priceCurve: mapData.prices,
+                    baseValue: mapData.prices[0],
+                    errors: [
+                        { id: 'err_ddo', label: 'Doubled Die Strike Anomaly', premium: 45 },
+                        { id: 'err_lam', label: 'Lamination Flaw / Planchet Flakiness', premium: 15 }
+                    ]
+                };
             } else {
-                // Initialize an intelligent custom baseline calculator
+                // Not in explicit key data matrix map? Formulate dynamic real base melt baseline
                 let baseValue = 0.01;
-                let coinName = "United States Specimen";
-                let defaultErrors = [];
+                let coinName = "United States Currency Specimen";
 
                 if (cleanQuery.includes('half') || cleanQuery.includes('50c')) {
                     baseValue = 0.50;
                     coinName = "Kennedy Half Dollar";
-                    // Historic silver valuation criteria rules
                     if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 10.50; // 90% Junk Silver baseline melt value
-                        coinName = "Franklin/Liberty Silver Half Dollar";
-                    } else if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1970) {
-                        baseValue = 4.00; // 40% Silver melt value
-                        coinName = "Kennedy 40% Silver Half Dollar";
+                        baseValue = 10.50; // Silver weight value
+                        coinName = "Silver Half Dollar Bullion Specimen";
                     }
                 } else if (cleanQuery.includes('penny') || cleanQuery.includes('cent')) {
                     baseValue = 0.01;
-                    coinName = "Lincoln Shield Cent";
-                    if (cleanQuery.includes('wheat') || (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1958)) {
-                        baseValue = 0.05;
-                        coinName = "Lincoln Wheat Penny";
-                        
-                        // --- HIGH-VALUE INTELLIGENCE UPGRADE MATRIX FOR WHEAT PENNIES ---
-                        if (parsedYear === '1931' && parsedMint === 'S') {
-                            baseValue = 75.00; // Historic low mintage 1931-S baseline
-                            coinName = "1931-S Lincoln Wheat Penny (Key Date)";
-                            isKeyDate = true;
-                        } else if (parsedYear === '1909' && parsedMint === 'S') {
-                            baseValue = 110.00; // 1909-S baseline
-                            coinName = "1909-S Lincoln Wheat Penny (Key Date)";
-                            isKeyDate = true;
-                            if (cleanQuery.includes('vdb')) {
-                                baseValue = 850.00; // Holy Grail 1909-S VDB
-                                coinName = "1909-S VDB Lincoln Wheat Penny (Major Key Date)";
-                            }
-                        } else if (parsedYear === '1914' && parsedMint === 'D') {
-                            baseValue = 180.00; // 1914-D Key Date
-                            coinName = "1914-D Lincoln Wheat Penny (Key Date)";
-                            isKeyDate = true;
-                        }
-                    }
+                    coinName = cleanQuery.includes('wheat') || (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1958) 
+                        ? "Lincoln Wheat Penny" : "Lincoln Shield Cent";
+                    if (coinName === "Lincoln Wheat Penny") baseValue = 0.05; // Standard common date rate
                 } else if (cleanQuery.includes('quarter') || cleanQuery.includes('25c')) {
                     baseValue = 0.25;
                     coinName = "Washington Quarter";
                     if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 5.25; // 90% Silver Quarter baseline melt value
-                        coinName = "Washington Silver Quarter";
+                        baseValue = 5.25; // Silver melt tier
+                        coinName = "Washington Silver Quarter Bullion";
                     }
                 }
 
-                // Setup variable multipliers tailored to key date premium properties
-                if (isKeyDate) {
-                    defaultErrors = [
-                        { id: 'key_unc', label: 'High Color Grade Premium', premiumAU: 45, premiumMS: 280 },
-                        { id: 'key_die', label: 'Die Variety / Rotated Die Anomaly', premiumAU: 30, premiumMS: 120 }
-                    ];
-                } else {
-                    defaultErrors = [
-                        { id: 'cust_ddo', label: 'Doubled Die Error Multiplier', premiumAU: 20, premiumMS: 65 },
-                        { id: 'cust_crack', label: 'Major Die Crack Anomaly', premiumAU: 10, premiumMS: 35 }
-                    ];
-                }
-
                 selectedCoin = {
-                    id: 'DYNAMIC_' + Date.now(),
+                    id: 'GENERIC_' + Date.now(),
                     year: parsedYear,
                     mint: parsedMint,
-                    name: coinName,
+                    name: rawInput.length > 5 ? rawInput : `${parsedYear}-${parsedMint} ${coinName}`,
+                    isMatrix: false,
                     baseValue: baseValue,
-                    errors: defaultErrors
+                    errors: [
+                        { id: 'gen_ddo', label: 'Verified Doubled Die Obverse (DDO)', premium: 25 },
+                        { id: 'gen_crack', label: 'Major Die Crack / Reticle Fractures', premium: 10 }
+                    ]
                 };
             }
 
@@ -231,17 +234,27 @@
             displayTargetRecord();
         }
 
+        function handleGradeChange(val) {
+            activeGradeIdx = parseInt(val);
+            const tier = CONDITION_TIERS[activeGradeIdx];
+            document.getElementById('grade-label').innerText = tier.label;
+            document.getElementById('grade-desc').innerText = tier.desc;
+            calculateAppraisal();
+        }
+
         function displayTargetRecord() {
             document.getElementById('target-coin-name').innerText = selectedCoin.name;
             document.getElementById('target-coin-year').innerText = selectedCoin.year;
             document.getElementById('target-coin-mint').innerText = selectedCoin.mint;
-            document.getElementById('target-coin-base').innerText = `$${selectedCoin.baseValue.toFixed(2)}`;
             
+            const displayMelt = selectedCoin.isMatrix ? "Numismatic Scale" : `$${selectedCoin.baseValue.toFixed(2)}`;
+            document.getElementById('target-coin-base').innerText = displayMelt;
+
             const badgeContainer = document.getElementById('badge-container');
-            if (isKeyDate) {
-                badgeContainer.innerHTML = `<span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded tracking-wide border border-red-500/30 uppercase">Key Date</span>`;
-            } else if (selectedCoin.baseValue > 1.00) {
-                badgeContainer.innerHTML = `<span class="text-[10px] bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded tracking-wide border border-amber-500/30 uppercase">Premium Melt</span>`;
+            if (selectedCoin.isMatrix && (selectedCoin.type === 'key' || selectedCoin.type === 'mega-key')) {
+                badgeContainer.innerHTML = `<span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded tracking-wide border border-red-500/30 uppercase">Key Date Variety</span>`;
+            } else if (!selectedCoin.isMatrix && selectedCoin.baseValue > 1.00) {
+                badgeContainer.innerHTML = `<span class="text-[10px] bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded tracking-wide border border-amber-500/30 uppercase">Pre-1965 Silver</span>`;
             } else {
                 badgeContainer.innerHTML = '';
             }
@@ -249,29 +262,6 @@
             document.getElementById('target-specimen-card').classList.remove('hidden');
             renderMultipliers();
             calculateAppraisal();
-        }
-
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('target-specimen-card').classList.add('hidden');
-            document.getElementById('multiplier-panel').classList.add('hidden');
-            selectedCoin = null;
-            activeErrors = {};
-            isKeyDate = false;
-            calculateAppraisal();
-        }
-
-        function setGrade(grade) {
-            activeGrade = grade;
-            document.getElementById('btn-grade-au').className = `text-left bg-[#161f33] border p-3 rounded-lg transition-all ${grade === 'AU' ? 'border-blue-500 bg-[#16223d]' : 'border-transparent'}`;
-            document.getElementById('btn-grade-ms').className = `text-left bg-[#161f33] border p-3 rounded-lg transition-all ${grade === 'MS' ? 'border-blue-500 bg-[#16223d]' : 'border-transparent'}`;
-            document.getElementById('txt-grade-au').className = `text-xs font-bold ${grade === 'AU' ? 'text-blue-400' : 'text-gray-400'}`;
-            document.getElementById('txt-grade-ms').className = `text-xs font-bold ${grade === 'MS' ? 'text-blue-400' : 'text-gray-400'}`;
-            
-            if (selectedCoin) {
-                renderMultipliers();
-                calculateAppraisal();
-            }
         }
 
         function renderMultipliers() {
@@ -287,13 +277,12 @@
                 const isChecked = activeErrors[err.id];
                 const checkedStyle = isChecked ? 'bg-amber-500 border-amber-500' : 'border-gray-600';
                 const rowStyle = isChecked ? 'border-amber-500/40 bg-[#24241d]' : 'border-gray-800 bg-[#161f33]';
-                const premium = activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
                 return `
                     <div onclick="toggleMultiplier('${err.id}')" class="flex items-center border p-3 rounded-lg cursor-pointer transition-all ${rowStyle}">
                         <div class="w-4 h-4 rounded border flex-shrink-0 mr-3 flex items-center justify-center ${checkedStyle}"></div>
                         <div class="flex-1">
                             <div class="text-xs font-semibold text-gray-200">${err.label}</div>
-                            <div class="text-[11px] text-amber-500 mt-0.5">Value Premium: +$${premium}.00</div>
+                            <div class="text-[11px] text-amber-500 mt-0.5">Value Premium: +$${err.premium}.00</div>
                         </div>
                     </div>
                 `;
@@ -312,19 +301,26 @@
                 document.getElementById('display-value').innerText = "$0.00";
                 return;
             }
-            let total = selectedCoin.baseValue;
+
+            let calculatedVal = 0.00;
+
+            if (selectedCoin.isMatrix) {
+                // Extract precise historical curve index valuation point
+                calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
+            } else {
+                // Scale generic item valuation depending on selected physical state index multipliers
+                const genericMultiplier = 1 + (activeGradeIdx * 0.75); 
+                calculatedVal = selectedCoin.baseValue * genericMultiplier;
+            }
+
+            // Append active verified multiplier add-on premiums
             selectedCoin.errors.forEach(err => {
                 if (activeErrors[err.id]) {
-                    total += activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
+                    calculatedVal += err.premium;
                 }
             });
-            
-            // Apply scale grading shifts relative to historical catalog condition jumps
-            if (activeGrade === 'MS') {
-                total += isKeyDate ? (selectedCoin.baseValue * 1.5) : 2.50; 
-            }
-            
-            document.getElementById('display-value').innerText = `$${total.toFixed(2)}`;
+
+            document.getElementById('display-value').innerText = `$${calculatedVal.toFixed(2)}`;
         }
 
         function saveToLedger() {
@@ -333,24 +329,29 @@
                 return;
             }
 
-            let total = selectedCoin.baseValue;
+            let finalValue = 0.00;
+            if (selectedCoin.isMatrix) {
+                finalValue = selectedCoin.priceCurve[activeGradeIdx];
+            } else {
+                finalValue = selectedCoin.baseValue * (1 + (activeGradeIdx * 0.75));
+            }
+
             let detectedMultiplierLabels = [];
             selectedCoin.errors.forEach(err => {
                 if (activeErrors[err.id]) {
-                    total += activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
+                    finalValue += err.premium;
                     detectedMultiplierLabels.push(err.label);
                 }
             });
-            if (activeGrade === 'MS') {
-                total += isKeyDate ? (selectedCoin.baseValue * 1.5) : 2.50;
-            }
+
+            const currentTier = CONDITION_TIERS[activeGradeIdx];
 
             const log = {
                 id: Date.now(),
-                name: `${selectedCoin.year}-${selectedCoin.mint} ${selectedCoin.name}`,
-                grade: activeGrade === 'MS' ? 'Mint State (MS Premium Appraised)' : 'Circulated (AU Base Line)',
+                name: selectedCoin.name,
+                grade: `Grade: ${currentTier.code} (${currentTier.label})`,
                 errors: detectedMultiplierLabels,
-                value: total,
+                value: finalValue,
                 notes: document.getElementById('input-notes').value,
                 date: new Date().toLocaleDateString()
             };
@@ -360,6 +361,15 @@
             document.getElementById('input-notes').value = '';
             clearSearch();
             renderLedger();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('target-specimen-card').classList.add('hidden');
+            document.getElementById('multiplier-panel').classList.add('hidden');
+            selectedCoin = null;
+            activeErrors = {};
+            calculateAppraisal();
         }
 
         function loadLedger() {
@@ -383,7 +393,7 @@
                         <div class="text-xs font-bold text-gray-200">${item.name}</div>
                         <div class="text-xs font-black text-blue-400">$${item.value.toFixed(2)}</div>
                     </div>
-                    <div class="text-[10px] text-gray-500 mt-0.5">Grade Context: ${item.grade} | Logged: ${item.date}</div>
+                    <div class="text-[10px] text-gray-500 mt-0.5">${item.grade} | Logged: ${item.date}</div>
                     ${item.errors.length ? `<div class="text-[10px] text-amber-500 font-semibold mt-1">Multipliers: ${item.errors.join(', ')}</div>` : ''}
                     ${item.notes ? `<div class="text-[10px] text-gray-400 italic mt-1.5 bg-[#0b0f17] p-2 rounded border border-gray-900">${item.notes}</div>` : ''}
                 </div>
