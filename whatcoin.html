@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatCoin™ - Autonomous Numismatic Engine</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body { background-color: #0b0f17; color: #f0f4f8; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #11141a; }
+        ::-webkit-scrollbar-thumb { background: #2c3545; border-radius: 4px; }
+    </style>
+</head>
+<body class="p-4 max-w-md mx-auto font-sans antialiased">
+
+    <div class="text-center my-6 border-b border-gray-900 pb-4">
+        <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
+            WhatCoin™
+        </h1>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite</p>
+    </div>
+
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg">
+        <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Gemini API Credentials</label>
+        <input 
+            id="api-key-input" 
+            type="password" 
+            placeholder="Paste your Gemini API Key here..." 
+            class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
+            onchange="saveApiKey(this.value)"
+        >
+        <p class="text-[10px] text-gray-500 mt-1.5">Stored securely inside local device storage vectors. Never pushed to Git.</p>
+    </div>
+
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Identify Target Specimen</label>
+        <div class="flex flex-col gap-2">
+            <div class="relative">
+                <input 
+                    id="search-input" 
+                    type="text" 
+                    placeholder="Enter Year, Mint Mark, Variety..." 
+                    class="w-full bg-[#182032] rounded-lg p-3.5 text-sm text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-blue-500 transition-all font-medium"
+                >
+                <button onclick="clearSearch()" class="absolute right-3 top-3.5 text-gray-500 hover:text-white text-sm font-bold">✕</button>
+            </div>
+            <button id="search-btn" onclick="executeSearch()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all text-xs uppercase tracking-wider shadow-lg flex justify-center items-center gap-2">
+                <span>Query Live AI Engine</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden">
+        <div class="flex justify-between items-start">
+            <div>
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Active Target Record</span>
+                <h3 id="target-coin-name" class="text-lg font-bold text-white mt-0.5">---</h3>
+            </div>
+            <div id="badge-container"></div>
+        </div>
+        <div class="flex gap-4 mt-2 text-xs text-gray-400">
+            <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
+            <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
+            <div>Source Feed: <span id="target-coin-base" class="text-green-400 font-semibold">Gemini Live</span></div>
+        </div>
+    </div>
+
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg">
+        <div class="flex justify-between items-center mb-1">
+            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Luster & Wear Condition Grade</h2>
+            <span id="grade-label" class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Good (4-6)</span>
+        </div>
+        <input 
+            id="grade-slider" 
+            type="range" 
+            min="0" 
+            max="4" 
+            value="1" 
+            oninput="handleGradeChange(this.value)"
+            class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500"
+        />
+    </div>
+
+    <div id="multiplier-panel" class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg hidden">
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Known Multiplier Options</h2>
+        <div id="error-checklist" class="flex flex-col gap-2"></div>
+    </div>
+
+    <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 shadow-2xl text-center relative overflow-hidden">
+        <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Estimated Real Market Value</span>
+        <div id="display-value" class="text-5xl font-black text-white my-2.5">$0.00</div>
+        <input id="input-notes" type="text" placeholder="Add specific observation details..." 
+               class="w-full bg-[#0b0f17] rounded-lg p-3 text-xs text-gray-200 border border-gray-800 focus:outline-none focus:border-blue-500 mb-3">
+        <button onclick="saveToLedger()" class="w-full bg-blue-400 hover:bg-blue-500 text-[#0b0f17] font-extrabold py-3 rounded-lg transition-all text-xs uppercase tracking-wider">
+            Commit to WhatCoin™ Log
+        </button>
+    </div>
+
+    <div class="bg-[#111622] rounded-xl p-4 mb-6 border border-[#222c3f] shadow-lg">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Saved Ledger Records</h2>
+            <button onclick="clearLedger()" id="btn-clear" class="text-xs font-bold text-red-400 hidden">Wipe Database</button>
+        </div>
+        <div id="ledger-list" class="flex flex-col gap-3 divide-y divide-gray-900"></div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/gen-ai": "https://esm.run/@google/gen-ai"
+        }
+      }
+    </script>
+    <script type="module">
+        import { GoogleGenAI } from '@google/gen-ai';
+        window.GoogleGenAIInstance = GoogleGenAI;
+    </script>
+
+    <script>
+        const CONDITION_TIERS = [
+            { idx: 0, label: "Bad (0-3)" },
+            { idx: 1, label: "Good (4-6)" },
+            { idx: 2, label: "Very Good (8)" },
+            { idx: 3, label: "Fine (9)" },
+            { idx: 4, label: "Very Fine (10)" }
+        ];
+
+        let selectedCoin = null;
+        let activeGradeIdx = 1; 
+        let activeErrors = {};
+        let ledger = [];
+
+        function init() {
+            loadLedger();
+            const savedKey = localStorage.getItem('whatcoin_gemini_api_key');
+            if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        }
+
+        function saveApiKey(val) { localStorage.setItem('whatcoin_gemini_api_key', val.trim()); }
+
+        async function executeSearch() {
+            const rawInput = document.getElementById('search-input').value.trim();
+            const apiKey = localStorage.getItem('whatcoin_gemini_api_key');
+            if (!apiKey) { alert("Input API Key first."); return; }
+
+            const searchBtn = document.getElementById('search-btn');
+            searchBtn.disabled = true;
+            searchBtn.innerText = "Analyzing...";
+
+            try {
+                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                const response = await ai.models.generateContent({
+                    model: 'gemini-3.5-flash',
+                    contents: `Analyze coin: "${rawInput}". Return JSON: {"name": "...", "year": "...", "mint": "...", "priceCurve": [5 values]}`,
+                    config: { responseMimeType: "application/json" }
+                });
+
+                const data = JSON.parse(response.text);
+                selectedCoin = { ...data, id: 'AI_' + Date.now(), errors: [{id: 'ddo', label: 'Doubled Die', premium: 25}] };
+                displayTargetRecord();
+            } catch (error) {
+                alert("AI Error. Ensure your key is valid for Gemini 3.5.");
+            } finally {
+                searchBtn.disabled = false;
+                searchBtn.innerText = "Query Live AI Engine";
+            }
+        }
+
+        function handleGradeChange(val) {
+            activeGradeIdx = parseInt(val);
+            document.getElementById('grade-label').innerText = CONDITION_TIERS[activeGradeIdx].label;
+            calculateAppraisal();
+        }
+
+        function displayTargetRecord() {
+            document.getElementById('target-coin-name').innerText = selectedCoin.name;
+            document.getElementById('target-specimen-card').classList.remove('hidden');
+            renderMultipliers();
+            calculateAppraisal();
+        }
+
+        function renderMultipliers() {
+            const container = document.getElementById('error-checklist');
+            container.innerHTML = selectedCoin.errors.map(err => `
+                <div onclick="toggleMultiplier('${err.id}')" class="p-3 border rounded-lg cursor-pointer ${activeErrors[err.id] ? 'bg-amber-500/20 border-amber-500' : 'bg-[#161f33] border-gray-800'}">
+                    <div class="text-xs font-semibold text-gray-200">${err.label}</div>
+                </div>`).join('');
+            document.getElementById('multiplier-panel').classList.remove('hidden');
+        }
+
+        function toggleMultiplier(id) { activeErrors[id] = !activeErrors[id]; renderMultipliers(); calculateAppraisal(); }
+
+        function calculateAppraisal() {
+            if (!selectedCoin) return;
+            let val = selectedCoin.priceCurve[activeGradeIdx];
+            document.getElementById('display-value').innerText = `$${val.toFixed(2)}`;
+        }
+
+        function saveToLedger() {
+            const log = { id: Date.now(), name: selectedCoin.name, value: selectedCoin.priceCurve[activeGradeIdx], date: new Date().toLocaleDateString() };
+            ledger.unshift(log);
+            localStorage.setItem('whatcoin_inventory_log', JSON.stringify(ledger));
+            renderLedger();
+        }
+
+        function clearSearch() { document.getElementById('search-input').value = ''; selectedCoin = null; document.getElementById('target-specimen-card').classList.add('hidden'); }
+        function loadLedger() { const saved = localStorage.getItem('whatcoin_inventory_log'); if (saved) ledger = JSON.parse(saved); renderLedger(); }
+        function renderLedger() { document.getElementById('ledger-list').innerHTML = ledger.map(item => `<div class="pt-3 text-xs">${item.name} - $${item.value.toFixed(2)}</div>`).join(''); }
+        function clearLedger() { ledger = []; localStorage.removeItem('whatcoin_inventory_log'); renderLedger(); }
+
+        document.addEventListener("DOMContentLoaded", init);
+    </script>
+</body>
+</html>
