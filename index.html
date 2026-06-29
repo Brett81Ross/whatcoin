@@ -31,7 +31,7 @@
         <div>
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Denomination</label>
             <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
-                <option value="1c">Penny</option>
+                <option value="1c">Cent (Penny)</option>
                 <option value="5c">Nickel</option>
                 <option value="10c">Dime</option>
                 <option value="25c">Quarter</option>
@@ -62,20 +62,20 @@
         <div>
             <div class="flex justify-between items-center mb-1">
                 <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Grade Scale Evaluation</label>
-                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">5 - Standard</span>
+                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">20 - Fine (F)</span>
             </div>
             <input 
                 id="grade-slider" 
                 type="range" 
-                min="0" 
-                max="10" 
-                value="5" 
+                min="1" 
+                max="70" 
+                value="20" 
                 class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]"
                 oninput="updateGradeLabel(this.value)"
             >
             <div class="flex justify-between text-[10px] text-gray-500 mt-1">
-                <span>0 (Bad)</span>
-                <span>10 (Very Fine)</span>
+                <span>PO-1 (Poor)</span>
+                <span>MS-70 (Uncirculated)</span>
             </div>
         </div>
 
@@ -144,13 +144,18 @@
 
         function updateGradeLabel(val) {
             const badge = document.getElementById('grade-badge');
-            let label = "Standard";
-            if (parseInt(val) === 0) label = "0 (Bad)";
-            else if (parseInt(val) === 10) label = "10 (Very Fine)";
-            else if (parseInt(val) > 7) label = "High Condition";
-            else if (parseInt(val) < 4) label = "Low Grade";
+            const num = parseInt(val);
+            let label = "Circulated";
             
-            badge.innerText = `${val} - ${label}`;
+            if (num >= 60) label = `MS-${num} (Uncirculated)`;
+            else if (num >= 50) label = `AU-${num} (About Uncirculated)`;
+            else if (num >= 40) label = `EF-${num} (Extremely Fine)`;
+            else if (num >= 20) label = `VF-${num} (Very Fine)`;
+            else if (num >= 12) label = `F-${num} (Fine)`;
+            else if (num >= 4) label = `G-${num} (Good)`;
+            else label = `PO-${num} (Poor)`;
+            
+            badge.innerText = label;
         }
 
         function getCompiledSelection() {
@@ -198,7 +203,7 @@
             } catch (error) {
                 console.error(error);
                 showError("Failed to fetch varieties. Check your API key parameters.");
-            } finally {
+            } honesty {
                 multiplierBtn.disabled = false;
                 multiplierBtn.innerText = "Multipliers";
             }
@@ -217,12 +222,19 @@
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
 
+                // Map numerical slider values to proper Sheldon notation text for the prompt
+                let sheldonNotation = `Grade ${config.grade}/70`;
+                const numGrade = parseInt(config.grade);
+                if (numGrade >= 60) sheldonNotation = `Mint State Uncirculated MS-${numGrade}`;
+                else if (numGrade >= 50) sheldonNotation = `About Uncirculated AU-${numGrade}`;
+                else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
+                else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
+
                 const response = await ai.models.generateContent({
                     model: "gemini-3.5-flash",
-                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Grade: ${config.grade}/10 (where 0 is completely bad/worn smooth and 10 is Choice Very Fine attributes). Output raw JSON data only matching exactly this schema format without markdown wrappers: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`
+                    contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation} on the standard 1-70 Sheldon scale. Output raw JSON data only matching exactly this schema format without markdown wrappers: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`
                 });
 
-                // Clean response text from common markdown code block wrappers
                 let rawText = response.text.trim();
                 if (rawText.startsWith("```")) {
                     rawText = rawText.replace(/^```(?:json)?/, "").replace(/```$/, "").trim();
