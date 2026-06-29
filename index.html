@@ -120,7 +120,7 @@
 
     <!-- App Configuration Logic Engine -->
     <script>
-        // Matrix prices now cleanly map across the 5 slider indices: [0-3 Bad, 4-6 Good, 8 Very Good, 9 Fine, 10 Very Fine]
+        // Matrix prices safely tracking across: [0-3 Bad, 4-6 Good, 8 Very Good, 9 Fine, 10 Very Fine]
         const NUMISMATIC_PRICING_MATRIX = {
             // Lincoln Wheat Pennies
             "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [35.00, 60.00, 70.00, 75.00, 85.00] },
@@ -129,6 +129,9 @@
             "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [95.00, 150.00, 185.00, 220.00, 280.00] },
             "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [300.00, 450.00, 550.00, 650.00, 775.00] },
             
+            // Special Anniversary Key Issues
+            "1996_W_DIME": { name: "1996-W Roosevelt Dime (50th Anniv. Mint Set Issue)", type: "key", prices: [5.00, 8.50, 12.00, 15.00, 22.00] },
+
             // Silver Half Dollars
             "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [2.50, 4.00, 5.00, 6.00, 7.50] }
         };
@@ -162,15 +165,19 @@
             let parsedMint = 'P';
             if (/\b(d|denver)\b/.test(cleanQuery)) parsedMint = 'D';
             else if (/\b(s|san francisco)\b/.test(cleanQuery)) parsedMint = 'S';
-            else if (/\b(w|west point)\b/.test(cleanQuery)) parsedMint = 'W';
+            else if (/\b(w|west point|w mint)\b/.test(cleanQuery)) parsedMint = 'W';
             else if (/\b(cc|carson city)\b/.test(cleanQuery)) parsedMint = 'CC';
 
             // Generate composite database key
-            let lookUpKey = `${parsedYear}_${parsedMint}_PENNY`;
+            let lookUpKey = `${parsedYear}_${parsedMint}_GENERIC`;
             if (cleanQuery.includes('vdb') && parsedYear === '1909') {
                 lookUpKey = "1909_S_VDB_PENNY";
+            } else if (cleanQuery.includes('penny') || cleanQuery.includes('cent')) {
+                lookUpKey = `${parsedYear}_${parsedMint}_PENNY`;
             } else if (cleanQuery.includes('half') || cleanQuery.includes('50c')) {
                 lookUpKey = `${parsedYear}_${parsedMint}_HALF`;
+            } else if (cleanQuery.includes('dime') || cleanQuery.includes('10c')) {
+                lookUpKey = `${parsedYear}_${parsedMint}_DIME`;
             }
 
             // Check our comprehensive matrix
@@ -191,7 +198,7 @@
                     ]
                 };
             } else {
-                // Not in explicit key data matrix map? Formulate dynamic real base melt baseline
+                // Precise generic asset class lookups
                 let baseValue = 0.01;
                 let coinName = "United States Currency Specimen";
 
@@ -199,19 +206,26 @@
                     baseValue = 0.50;
                     coinName = "Kennedy Half Dollar";
                     if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 10.50; // Silver weight value
+                        baseValue = 10.50;
                         coinName = "Silver Half Dollar Bullion Specimen";
+                    }
+                } else if (cleanQuery.includes('dime') || cleanQuery.includes('10c')) {
+                    baseValue = 0.10;
+                    coinName = "Roosevelt Dime";
+                    if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
+                        baseValue = 2.25; // 90% Silver baseline melt evaluation point
+                        coinName = "Silver Roosevelt Dime Specimen";
                     }
                 } else if (cleanQuery.includes('penny') || cleanQuery.includes('cent')) {
                     baseValue = 0.01;
                     coinName = cleanQuery.includes('wheat') || (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1958) 
                         ? "Lincoln Wheat Penny" : "Lincoln Shield Cent";
-                    if (coinName === "Lincoln Wheat Penny") baseValue = 0.05; // Standard common date rate
+                    if (coinName === "Lincoln Wheat Penny") baseValue = 0.05;
                 } else if (cleanQuery.includes('quarter') || cleanQuery.includes('25c')) {
                     baseValue = 0.25;
                     coinName = "Washington Quarter";
                     if (parsedYear !== 'N/A' && parseInt(parsedYear) <= 1964) {
-                        baseValue = 5.25; // Silver melt tier
+                        baseValue = 5.25;
                         coinName = "Washington Silver Quarter Bullion";
                     }
                 }
@@ -253,7 +267,7 @@
             const badgeContainer = document.getElementById('badge-container');
             if (selectedCoin.isMatrix && (selectedCoin.type === 'key' || selectedCoin.type === 'mega-key')) {
                 badgeContainer.innerHTML = `<span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-2 py-0.5 rounded tracking-wide border border-red-500/30 uppercase">Key Date Variety</span>`;
-            } else if (!selectedCoin.isMatrix && selectedCoin.baseValue > 1.00) {
+            } else if (!selectedCoin.isMatrix && selectedCoin.baseValue > 0.25) {
                 badgeContainer.innerHTML = `<span class="text-[10px] bg-amber-500/20 text-amber-400 font-bold px-2 py-0.5 rounded tracking-wide border border-amber-500/30 uppercase">Pre-1965 Silver</span>`;
             } else {
                 badgeContainer.innerHTML = '';
@@ -307,7 +321,6 @@
             if (selectedCoin.isMatrix) {
                 calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
             } else {
-                // Progressively scales dynamic item baselines across your new metrics
                 const genericMultiplier = 1 + (activeGradeIdx * 0.50); 
                 calculatedVal = selectedCoin.baseValue * genericMultiplier;
             }
