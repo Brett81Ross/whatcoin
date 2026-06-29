@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Autonomous AI Suite</title>
+    <title>WhatCoin™ - Numismatic Matrix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
@@ -23,6 +24,12 @@
     <!-- Main Controller -->
     <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl space-y-4">
         
+        <!-- API Key -->
+        <div>
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Gemini API Key</label>
+            <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-mono shadow-inner">
+        </div>
+
         <!-- Year -->
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Year</label>
@@ -120,7 +127,11 @@
     </div>
 
     <script>
-        function runQuery() { console.log("Querying Proof data..."); }
+        function runQuery() { 
+            const apiKey = document.getElementById('api-key').value;
+            if(!apiKey) { alert("Please enter your API key first."); return; }
+            console.log("Querying Proof data with key..."); 
+        }
         function startVoiceSearch() {
             const rec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (rec) {
