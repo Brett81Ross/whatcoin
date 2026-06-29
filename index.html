@@ -6,42 +6,71 @@
     <title>WhatCoin™ - Numismatic Matrix Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* iOS Dark Mode inspired colors */
         body { 
             background-color: #000000; 
             min-height: 100vh; 
             color: #ffffff; 
         }
         .glass-panel { 
-            background: #0a0a0a; 
-            border: 1px solid #1a1a1a; 
+            background: #1c1c1e; 
+            border: 1px solid #2c2c2e; 
         }
-        select, input { 
-            background-color: #050505 !important; 
+        select, input, .ios-input { 
+            background-color: #2c2c2e !important; 
             color: #ffffff !important; 
-            border: 1px solid #333333 !important;
+            border: none !important;
             font-size: 1.1rem !important;
+            padding: 1.25rem !important;
+            border-radius: 1rem !important;
         }
-        label { font-size: 0.8rem !important; }
+        label { 
+            font-size: 0.75rem !important; 
+            color: #8e8e93 !important; 
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem !important;
+        }
+        /* Custom slider styling for iOS feel */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            background: #3a3a3c;
+            border-radius: 5px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #0a84ff;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center font-sans antialiased">
 
     <div class="text-center my-8">
-        <!-- Logo size increased to w-64 h-64 -->
         <img src="logo.png" alt="WhatCoin Logo" onerror="this.style.display='none';" class="w-64 h-64 mx-auto mb-6 rounded-3xl object-contain">
         <h1 class="text-4xl font-black tracking-tighter text-white">WhatCoin™</h1>
-        <p class="text-sm uppercase tracking-[0.4em] text-[#666] mt-2">Numismatic Matrix Lab</p>
+        <p class="text-sm uppercase tracking-[0.4em] text-[#8e8e93] mt-2">Numismatic Matrix Lab</p>
     </div>
 
     <div class="glass-panel w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-6">
         <div>
-            <label class="font-bold text-[#777] uppercase tracking-widest ml-1">Year</label>
-            <select id="year-select" class="w-full mt-2 rounded-2xl p-5 font-bold"></select>
+            <label class="font-bold">Year</label>
+            <select id="year-select" class="w-full mt-2"></select>
         </div>
 
         <div>
-            <label class="font-bold text-[#777] uppercase tracking-widest ml-1">Denomination</label>
-            <select id="denom-select" class="w-full mt-2 rounded-2xl p-5 font-bold">
+            <label class="font-bold">Denomination</label>
+            <select id="denom-select" class="w-full mt-2">
                 <option>Large Cent (1793–1857)</option>
                 <option>Flying Eagle Cent (1856–1858)</option>
                 <option>Indian Head Cent (1859–1909)</option>
@@ -85,8 +114,8 @@
         </div>
 
         <div>
-            <label class="font-bold text-[#777] uppercase tracking-widest ml-1">Condition / Toning / Variety</label>
-            <select id="condition-select" class="w-full mt-2 rounded-2xl p-5 font-bold">
+            <label class="font-bold">Condition / Toning / Variety</label>
+            <select id="condition-select" class="w-full mt-2">
                 <option>Natural (Untoned)</option>
                 <option>Bag Toning</option>
                 <option>Rainbow Toning</option>
@@ -97,40 +126,52 @@
         </div>
 
         <div>
-            <label class="font-bold text-[#777] uppercase tracking-widest ml-1">Mint Mark</label>
-            <select id="mint-select" class="w-full mt-2 rounded-2xl p-5 font-bold">
+            <label class="font-bold">Mint Mark</label>
+            <select id="mint-select" class="w-full mt-2">
                 <option>None (Philadelphia)</option><option>P</option><option>D</option><option>S</option>
                 <option>W</option><option>O</option>
             </select>
         </div>
 
+        <!-- Added Coin Grading Scale Slider -->
         <div>
-            <label class="font-bold text-[#777] uppercase tracking-widest ml-1">Visual Evidence</label>
-            <input type="file" accept="image/*" capture="environment" class="w-full mt-2 rounded-2xl p-5 font-bold file:bg-[#333] file:text-white file:border-0 file:rounded-lg file:px-4 file:py-2">
+            <label class="font-bold">Grading Scale (P-1 to MS-70)</label>
+            <input type="range" id="grade-slider" min="1" max="70" value="1" class="mt-4">
+            <div id="grade-val" class="text-center font-black text-xl mt-2 text-[#0a84ff]">1</div>
         </div>
 
-        <button onclick="runQuery()" id="query-btn" class="w-full bg-white text-black font-black py-5 rounded-2xl text-lg uppercase tracking-widest transition-all">
+        <div>
+            <label class="font-bold">Visual Evidence</label>
+            <input type="file" accept="image/*" capture="environment" class="w-full mt-2 ios-input">
+        </div>
+
+        <button onclick="runQuery()" id="query-btn" class="w-full bg-[#0a84ff] text-white font-black py-5 rounded-2xl text-lg uppercase tracking-widest transition-all">
             QUERY MARKET VALUATION
         </button>
 
-        <div class="pt-6 mt-6 border-t border-[#1a1a1a]">
-            <label class="font-bold text-[#444] uppercase tracking-widest ml-1">Gemini API Key</label>
-            <input type="password" id="api-key" placeholder="Paste API key..." class="w-full mt-2 rounded-2xl p-5 font-mono">
+        <div class="pt-6 mt-6 border-t border-[#2c2c2e]">
+            <label class="font-bold">Gemini API Key</label>
+            <input type="password" id="api-key" placeholder="Paste API key..." class="w-full mt-2 ios-input">
         </div>
 
-        <div id="result-display" class="hidden mt-8 p-6 border border-[#222] bg-[#050505] rounded-2xl text-center">
-            <p class="text-xs font-black text-[#555] uppercase tracking-widest mb-2">Estimated Market Valuation</p>
+        <div id="result-display" class="hidden mt-8 p-6 bg-[#1c1c1e] rounded-2xl text-center">
+            <p class="text-xs font-black text-[#8e8e93] uppercase tracking-widest mb-2">Estimated Market Valuation</p>
             <div id="valuation-text" class="text-xl font-bold text-white tracking-tight"></div>
         </div>
     </div>
 
     <script>
         const yearSelect = document.getElementById('year-select');
+        const gradeSlider = document.getElementById('grade-slider');
+        const gradeVal = document.getElementById('grade-val');
+
         for (let i = 2026; i >= 1800; i--) {
             const opt = document.createElement('option');
             opt.value = i; opt.innerHTML = i;
             yearSelect.appendChild(opt);
         }
+
+        gradeSlider.oninput = function() { gradeVal.innerText = this.value; }
 
         async function runQuery() { 
             const apiKey = document.getElementById('api-key').value;
@@ -147,7 +188,7 @@
             const payload = {
                 "contents": [{
                     "parts": [{
-                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. If no collector market exists, state 'Market value not yet established'.`
+                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} with a grade of ${gradeSlider.value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. If no collector market exists, state 'Market value not yet established'.`
                     }]
                 }]
             };
