@@ -3,179 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Numismatic Appraisal Suite</title>
-    <!-- Tailwind CSS Engine for Clean Mobile UI -->
+    <title>WhatCoin™ - Advanced Numismatic Engine</title>
+    <!-- Tailwind CSS Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        body { background-color: #11141a; color: #f0f4f8; }
+        body { background-color: #0b0f17; color: #f0f4f8; }
+        /* Smooth scrollbar styling for a native app feel */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #11141a; }
+        ::-webkit-scrollbar-thumb { background: #2c3545; border-radius: 4px; }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto font-sans">
+<body class="p-4 max-w-md mx-auto font-sans antialiased">
 
-    <!-- App Banner -->
-    <div class="text-center my-6 border-b border-gray-800 pb-4">
-        <h1 class="text-3xl font-bold tracking-tight text-white">WhatCoin™</h1>
-        <p class="text-xs text-blue-400 mt-1 uppercase tracking-wider font-semibold">Numismatic Currency Appraisal Suite</p>
+    <!-- App Header Banner -->
+    <div class="text-center my-6 border-b border-gray-900 pb-4">
+        <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
+            WhatCoin™
+        </h1>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Numismatic Intelligence Suite</p>
     </div>
 
-    <!-- Target Selection Configurator -->
-    <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
-        <h2 class="text-sm font-bold text-gray-300 mb-3">Select State Target Variety</h2>
-        <div id="coin-chips" class="flex flex-wrap gap-2">
-            <!-- Chips injected by JS Engine -->
+    <!-- Predictive Search Engine Panel -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl relative">
+        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Identify Target Specimen</label>
+        <div class="relative">
+            <input 
+                id="search-input" 
+                type="text" 
+                placeholder="Type Year, Mint Mark, or Variety (e.g., 2004 D)..." 
+                oninput="handleSearch(this.value)"
+                class="w-full bg-[#182032] rounded-lg p-3.5 text-sm text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-blue-500 transition-all font-medium"
+            >
+            <!-- Clear Input Button -->
+            <button onclick="clearSearch()" class="absolute right-3 top-3.5 text-gray-500 hover:text-white text-sm font-bold">✕</button>
+        </div>
+
+        <!-- Google-Style Predictive Dropdown List -->
+        <div 
+            id="predictive-dropdown" 
+            class="absolute left-0 right-0 mt-2 bg-[#161f33] border border-[#2e3b54] rounded-xl shadow-2xl z-50 overflow-hidden hidden max-h-60 overflow-y-auto"
+        >
+            <!-- Dropdown matches populate dynamically here -->
         </div>
     </div>
 
-    <!-- Surface Micro-Condition Grading -->
-    <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
-        <h2 class="text-sm font-bold text-gray-300 mb-3">Luster & Wear Condition Grade</h2>
-        <div class="flex flex-col gap-2">
-            <button id="btn-grade-au" onclick="setGrade('AU')" class="text-left bg-[#242c3d] border border-blue-500/50 p-3 rounded-lg transition-all">
-                <div class="text-sm font-semibold text-blue-400" id="txt-grade-au">Circulated / About Uncirculated (AU)</div>
-                <div class="text-xs text-gray-500 mt-0.5">Trace wear on high design points</div>
+    <!-- Live Active Target Identity Card -->
+    <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden">
+        <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Active Target Record</span>
+        <h3 id="target-coin-name" class="text-lg font-bold text-white mt-0.5">---</h3>
+        <div class="flex gap-4 mt-2 text-xs text-gray-400">
+            <div>Year: <span id="target-coin-year" class="text-gray-200 font-semibold">---</span></div>
+            <div>Mint Mark: <span id="target-coin-mint" class="text-gray-200 font-semibold">---</span></div>
+            <div>Base Numismatic Value: <span id="target-coin-base" class="text-green-400 font-semibold">$0.25</span></div>
+        </div>
+    </div>
+
+    <!-- Micro-Condition & Wear Configuration -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg">
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Luster & Wear Condition Grade</h2>
+        <div class="grid grid-cols-2 gap-2">
+            <button id="btn-grade-au" onclick="setGrade('AU')" class="text-left bg-[#161f33] border border-blue-500 p-3 rounded-lg transition-all">
+                <div class="text-xs font-bold text-blue-400" id="txt-grade-au">Circulated (AU)</div>
+                <div class="text-[10px] text-gray-500 mt-0.5">Trace high-point wear</div>
             </button>
-            <button id="btn-grade-ms" onclick="setGrade('MS')" class="text-left bg-[#242c3d] border border-transparent p-3 rounded-lg transition-all">
-                <div class="text-sm font-semibold text-gray-400" id="txt-grade-ms">Mint State / Uncirculated (MS)</div>
-                <div class="text-xs text-gray-500 mt-0.5">Full original mint frost, no wear</div>
+            <button id="btn-grade-ms" onclick="setGrade('MS')" class="text-left bg-[#161f33] border border-transparent p-3 rounded-lg transition-all">
+                <div class="text-xs font-bold text-gray-400" id="txt-grade-ms">Mint State (MS)</div>
+                <div class="text-[10px] text-gray-500 mt-0.5">Full original mint frost</div>
             </button>
         </div>
     </div>
 
-    <!-- Micro-Error Checklist Verification -->
-    <div class="bg-[#1b212c] rounded-xl p-4 mb-4 border border-[#2c3545] shadow-lg">
-        <h2 class="text-sm font-bold text-gray-300 mb-2">Micro-Attribution Error Checklist</h2>
-        <p class="text-xs text-gray-400 mb-3 leading-relaxed">Examine the coin surface under magnification. Check any confirmed anomalies below:</p>
+    <!-- Multiplier Defect Matrix Panel -->
+    <div id="multiplier-panel" class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg hidden">
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Known Multiplier Options & Rarities</h2>
+        <p class="text-[11px] text-gray-500 mb-3">Examine specimen attributes under magnification to verify anomalies:</p>
         <div id="error-checklist" class="flex flex-col gap-2">
-            <!-- Checklist items injected by JS Engine -->
+            <!-- Multipliers drop down here dynamically -->
         </div>
     </div>
 
-    <!-- Live Financial Appraisal Output Panel -->
-    <div class="bg-[#1e293b] rounded-xl p-5 mb-4 border border-blue-400 shadow-xl text-center">
-        <span class="text-xs font-bold text-blue-400 uppercase tracking-widest">Estimated Real Market Value</span>
-        <div id="display-value" class="text-5xl font-extrabold text-white my-3">$0.25</div>
-        <p class="text-[11px] text-gray-500 max-w-xs mx-auto mb-4 leading-normal">Based on aggregate auction data, strike verification parameters, and current metal trends.</p>
+    <!-- Real Market Appraised Live Valuation Output Box -->
+    <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 shadow-2xl text-center relative overflow-hidden">
+        <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Estimated Real Market Value</span>
+        <div id="display-value" class="text-5xl font-black text-white my-2.5">$0.25</div>
+        <p class="text-[10px] text-gray-400 max-w-xs mx-auto mb-4 leading-normal">Derived from aggregated auction verification criteria and real-time trends.</p>
         
-        <input id="input-notes" type="text" placeholder="Add coin details (e.g., Mint mark clarity...)" 
-               class="w-full bg-[#0f172a] rounded-lg p-3 text-sm text-gray-200 border border-gray-700 focus:outline-none focus:border-blue-500 mb-3">
+        <input id="input-notes" type="text" placeholder="Add specific observation details..." 
+               class="w-full bg-[#0b0f17] rounded-lg p-3 text-xs text-gray-200 border border-gray-800 focus:outline-none focus:border-blue-500 mb-3">
         
-        <button onclick="saveToLedger()" class="w-full bg-blue-400 hover:bg-blue-500 text-[#0f172a] font-bold py-3 rounded-lg transition-all text-sm">
+        <button onclick="saveToLedger()" class="w-full bg-blue-400 hover:bg-blue-500 text-[#0b0f17] font-extrabold py-3 rounded-lg transition-all text-xs uppercase tracking-wider">
             Commit to WhatCoin™ Log
         </button>
     </div>
 
-    <!-- Persistent Storage Ledger View -->
-    <div class="bg-[#1b212c] rounded-xl p-4 mb-6 border border-[#2c3545] shadow-lg">
+    <!-- Ledger Inventory Suite -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-6 border border-[#222c3f] shadow-lg">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-sm font-bold text-gray-300">Saved Ledger Logs</h2>
-            <button onclick="clearLedger()" id="btn-clear" class="text-xs font-semibold text-red-400 hidden">Clear All</button>
+            <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Saved Ledger Records</h2>
+            <button onclick="clearLedger()" id="btn-clear" class="text-xs font-bold text-red-400 hidden">Wipe Database</button>
         </div>
-        <div id="ledger-list" class="flex flex-col gap-3 divide-y divide-gray-800">
-            <!-- Logs injected by JS Engine -->
+        <div id="ledger-list" class="flex flex-col gap-3 divide-y divide-gray-900">
+            <!-- Saved items load here -->
         </div>
     </div>
 
-    <!-- Core App Logic Engine -->
+    <!-- App Configuration Logic Engine -->
     <script>
-        const STATE_COIN_DB = {
-            '1999-P_DELAWARE': { name: '1999-P Delaware', baseValue: 0.25, notableErrors: [{ id: 'del_spit', label: 'Spitting Horse (Die Crack)', premiumCirculated: 10, premiumUncirculated: 50 }] },
-            '2004-D_WISCONSIN': { name: '2004-D Wisconsin', baseValue: 0.25, notableErrors: [{ id: 'wi_high', label: 'Extra Corn Leaf - High Variety', premiumCirculated: 50, premiumUncirculated: 300 }, { id: 'wi_low', label: 'Extra Corn Leaf - Low Variety', premiumCirculated: 40, premiumUncirculated: 250 }] },
-            '2005-P_KANSAS': { name: '2005-P Kansas', baseValue: 0.25, notableErrors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Filled Die)', premiumCirculated: 15, premiumUncirculated: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack)', premiumCirculated: 5, premiumUncirculated: 45 }] },
-            '2005-P_MINNESOTA': { name: '2005-P Minnesota', baseValue: 0.25, notableErrors: [{ id: 'mn_tree', label: 'Extra Tree (Doubled Die Reverse)', premiumCirculated: 10, premiumUncirculated: 120 }] },
-            '2008-P_ARIZONA': { name: '2008-P Arizona', baseValue: 0.25, notableErrors: [{ id: 'az_cactus', label: 'Extra Cactus Leaf / Die Chip', premiumCirculated: 3, premiumUncirculated: 25 }] }
-        };
+        // Full Dataset Mapped out explicitly with search tag indexing
+        const COIN_DATASET = [
+            { id: '1999_P_DE', year: '1999', mint: 'P', name: 'Delaware State Quarter', baseValue: 0.25, tags: ['1999', 'p', 'delaware', 'spitting', 'horse', 'die crack'], errors: [{ id: 'del_spit', label: 'Spitting Horse (Die Crack Variety)', premiumAU: 10, premiumMS: 50 }] },
+            { id: '2004_D_WI', year: '2004', mint: 'D', name: 'Wisconsin State Quarter', baseValue: 0.25, tags: ['2004', 'd', 'wisconsin', 'corn', 'leaf', 'high', 'low'], errors: [{ id: 'wi_high', label: 'Extra Corn Leaf - High Variety', premiumAU: 50, premiumMS: 300 }, { id: 'wi_low', label: 'Extra Corn Leaf - Low Variety', premiumAU: 40, premiumMS: 250 }] },
+            { id: '2005_P_KS', year: '2005', mint: 'P', name: 'Kansas State Quarter', baseValue: 0.25, tags: ['2005', 'p', 'kansas', 'rust', 'god', 'bison', 'spitting'], errors: [{ id: 'ks_rust', label: '"In God We Rust" (Grease Filled Die)', premiumAU: 15, premiumMS: 90 }, { id: 'ks_spit', label: 'Spitting Bison (Die Crack Variety)', premiumAU: 5, premiumMS: 45 }] },
+            { id: '2005_P_MN', year: '2005', mint: 'P', name: 'Minnesota State Quarter', baseValue: 0.25, tags: ['2005', 'p', 'minnesota', 'tree', 'extra', 'doubled die'], errors: [{ id: 'mn_tree', label: 'Extra Tree (Doubled Die Reverse)', premiumAU: 10, premiumMS: 120 }] },
+            { id: '2008_P_AZ', year: '2008', mint: 'P', name: 'Arizona State Quarter', baseValue: 0.25, tags: ['2008', 'p', 'arizona', 'cactus', 'extra', 'die chip'], errors: [{ id: 'az_cactus', label: 'Extra Cactus Leaf / Complex Die Chip', premiumAU: 3, premiumMS: 25 }] }
+        ];
 
-        let activeCoin = '2004-D_WISCONSIN';
+        let selectedCoin = null;
         let activeGrade = 'AU';
         let activeErrors = {};
         let ledger = [];
 
         function init() {
-            renderChips();
             loadLedger();
             calculateAppraisal();
         }
 
-        function renderChips() {
-            const container = document.getElementById('coin-chips');
-            container.innerHTML = Object.keys(STATE_COIN_DB).map(key => {
-                const isActive = key === activeCoin;
-                return `<button onclick="setCoin('${key}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${isActive ? 'bg-blue-400 text-[#0f172a] border-blue-500' : 'bg-[#242c3d] text-gray-400 border-gray-700'}">${STATE_COIN_DB[key].name}</button>`;
-            }).join('');
+        // Live Google-Style Predictive Input Logic
+        function handleSearch(query) {
+            const dropdown = document.getElementById('predictive-dropdown');
+            if (!query.trim()) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            const cleanQuery = query.toLowerCase();
+            const matches = COIN_DATASET.filter(coin => {
+                return coin.tags.some(tag => tag.includes(cleanQuery)) || 
+                       `${coin.year} ${coin.mint} ${coin.name}`.toLowerCase().includes(cleanQuery);
+            });
+
+            if (matches.length === 0) {
+                dropdown.innerHTML = `<div class="p-3 text-xs text-gray-500 italic">No historical variants matching sequence.</div>`;
+            } else {
+                dropdown.innerHTML = matches.map(coin => `
+                    <div 
+                        onclick="selectCoin('${coin.id}')" 
+                        class="p-3 border-b border-[#222c3f] last:border-0 hover:bg-[#1f2a45] cursor-pointer transition-all flex justify-between items-center"
+                    >
+                        <div>
+                            <span class="text-sm font-bold text-white">${coin.year}-${coin.mint}</span>
+                            <span class="text-xs text-gray-300 ml-2">${coin.name}</span>
+                        </div>
+                        <span class="text-[10px] bg-blue-500/10 text-blue-400 font-semibold px-2 py-0.5 rounded">Select</span>
+                    </div>
+                `).join('');
+            }
+            dropdown.classList.remove('hidden');
         }
 
-        function setCoin(key) {
-            activeCoin = key;
+        function selectCoin(id) {
+            selectedCoin = COIN_DATASET.find(c => c.id === id);
             activeErrors = {};
-            renderChips();
-            renderChecklist();
+            
+            document.getElementById('search-input').value = `${selectedCoin.year} ${selectedCoin.mint} - ${selectedCoin.name}`;
+            document.getElementById('predictive-dropdown').classList.add('hidden');
+
+            // Render Info Card details
+            document.getElementById('target-coin-name').innerText = selectedCoin.name;
+            document.getElementById('target-coin-year').innerText = selectedCoin.year;
+            document.getElementById('target-coin-mint').innerText = selectedCoin.mint;
+            document.getElementById('target-coin-base').innerText = `$${selectedCoin.baseValue.toFixed(2)}`;
+            document.getElementById('target-specimen-card').classList.remove('hidden');
+
+            renderMultipliers();
+            calculateAppraisal();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('predictive-dropdown').classList.add('hidden');
+            document.getElementById('target-specimen-card').classList.add('hidden');
+            document.getElementById('multiplier-panel').classList.add('hidden');
+            selectedCoin = null;
+            activeErrors = {};
             calculateAppraisal();
         }
 
         function setGrade(grade) {
             activeGrade = grade;
-            document.getElementById('btn-grade-au').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition-all ${grade === 'AU' ? 'border-blue-400' : 'border-transparent'}`;
-            document.getElementById('btn-grade-ms').className = `text-left bg-[#242c3d] border p-3 rounded-lg transition-all ${grade === 'MS' ? 'border-blue-400' : 'border-transparent'}`;
-            document.getElementById('txt-grade-au').className = `text-sm font-semibold ${grade === 'AU' ? 'text-blue-400' : 'text-gray-400'}`;
-            document.getElementById('txt-grade-ms').className = `text-sm font-semibold ${grade === 'MS' ? 'text-blue-400' : 'text-gray-400'}`;
-            renderChecklist();
-            calculateAppraisal();
+            document.getElementById('btn-grade-au').className = `text-left bg-[#161f33] border p-3 rounded-lg transition-all ${grade === 'AU' ? 'border-blue-500 bg-[#16223d]' : 'border-transparent'}`;
+            document.getElementById('btn-grade-ms').className = `text-left bg-[#161f33] border p-3 rounded-lg transition-all ${grade === 'MS' ? 'border-blue-500 bg-[#16223d]' : 'border-transparent'}`;
+            document.getElementById('txt-grade-au').className = `text-xs font-bold ${grade === 'AU' ? 'text-blue-400' : 'text-gray-400'}`;
+            document.getElementById('txt-grade-ms').className = `text-xs font-bold ${grade === 'MS' ? 'text-blue-400' : 'text-gray-400'}`;
+            
+            if (selectedCoin) {
+                renderMultipliers();
+                calculateAppraisal();
+            }
         }
 
-        function renderChecklist() {
+        function renderMultipliers() {
+            const panel = document.getElementById('multiplier-panel');
             const container = document.getElementById('error-checklist');
-            const coin = STATE_COIN_DB[activeCoin];
-            container.innerHTML = coin.notableErrors.map(err => {
-                const checked = activeErrors[err.id] ? 'bg-amber-500 border-amber-500' : 'border-gray-600';
-                const rowSelected = activeErrors[err.id] ? 'border-amber-500/50 bg-[#2d2d24]' : 'border-gray-700 bg-[#242c3d]';
-                const premium = activeGrade === 'MS' ? err.premiumUncirculated : err.premiumCirculated;
+            
+            if (!selectedCoin || selectedCoin.errors.length === 0) {
+                panel.classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = selectedCoin.errors.map(err => {
+                const isChecked = activeErrors[err.id];
+                const checkedStyle = isChecked ? 'bg-amber-500 border-amber-500' : 'border-gray-600';
+                const rowStyle = isChecked ? 'border-amber-500/40 bg-[#24241d]' : 'border-gray-800 bg-[#161f33]';
+                const premium = activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
                 return `
-                    <div onclick="toggleError('${err.id}')" class="flex items-center border p-3 rounded-lg cursor-pointer transition-all ${rowSelected}">
-                        <div class="w-4 h-4 rounded border-2 mr-3 flex flex-shrink-0 items-center justify-center ${checked}"></div>
+                    <div onclick="toggleMultiplier('${err.id}')" class="flex items-center border p-3 rounded-lg cursor-pointer transition-all ${rowStyle}">
+                        <div class="w-4 h-4 rounded border flex-shrink-0 mr-3 flex items-center justify-center ${checkedStyle}"></div>
                         <div class="flex-1">
-                            <div class="text-sm font-medium text-gray-200">${err.label}</div>
-                            <div class="text-xs text-amber-500 mt-0.5">Est. Premium: +$${premium}</div>
+                            <div class="text-xs font-semibold text-gray-200">${err.label}</div>
+                            <div class="text-[11px] text-amber-500 mt-0.5">Value Multiplier Premium: +$${premium}.00</div>
                         </div>
                     </div>
                 `;
             }).join('');
+            panel.classList.remove('hidden');
         }
 
-        function toggleError(id) {
+        function toggleMultiplier(id) {
             activeErrors[id] = !activeErrors[id];
-            renderChecklist();
+            renderMultipliers();
             calculateAppraisal();
         }
 
         function calculateAppraisal() {
-            const coin = STATE_COIN_DB[activeCoin];
-            let total = coin.baseValue;
-            coin.notableErrors.forEach(err => {
-                if (activeErrors[err.id]) {
-                    total += activeGrade === 'MS' ? err.premiumUncirculated : err.premiumCirculated;
-                }
-            });
-            if (activeGrade === 'MS') total += 2.50;
+            let total = selectedCoin ? selectedCoin.baseValue : 0.25;
+            if (selectedCoin) {
+                selectedCoin.errors.forEach(err => {
+                    if (activeErrors[err.id]) {
+                        total += activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
+                    }
+                });
+            }
+            if (activeGrade === 'MS' && selectedCoin) total += 2.50; // Condition bump
             document.getElementById('display-value').innerText = `$${total.toFixed(2)}`;
         }
 
         function saveToLedger() {
-            const coin = STATE_COIN_DB[activeCoin];
-            let total = coin.baseValue;
-            let detected = [];
-            coin.notableErrors.forEach(err => {
+            if (!selectedCoin) {
+                alert("Please use the predictive search to isolate a target specimen variant first.");
+                return;
+            }
+
+            let total = selectedCoin.baseValue;
+            let detectedMultiplierLabels = [];
+            selectedCoin.errors.forEach(err => {
                 if (activeErrors[err.id]) {
-                    total += activeGrade === 'MS' ? err.premiumUncirculated : err.premiumCirculated;
-                    detected.push(err.label);
+                    total += activeGrade === 'MS' ? err.premiumMS : err.premiumAU;
+                    detectedMultiplierLabels.push(err.label);
                 }
             });
             if (activeGrade === 'MS') total += 2.50;
 
             const log = {
                 id: Date.now(),
-                name: coin.name + ' Quarter',
-                grade: activeGrade === 'MS' ? 'Mint State (MS-65 Est.)' : 'Circulated (AU-55 Est.)',
-                errors: detected,
+                name: `${selectedCoin.year}-${selectedCoin.mint} ${selectedCoin.name}`,
+                grade: activeGrade === 'MS' ? 'Mint State (MS Premium Appraised)' : 'Circulated (AU Base Line)',
+                errors: detectedMultiplierLabels,
                 value: total,
                 notes: document.getElementById('input-notes').value,
                 date: new Date().toLocaleDateString()
@@ -184,9 +278,7 @@
             ledger.unshift(log);
             localStorage.setItem('whatcoin_inventory_log', JSON.stringify(ledger));
             document.getElementById('input-notes').value = '';
-            activeErrors = {};
-            renderChecklist();
-            calculateAppraisal();
+            clearSearch();
             renderLedger();
         }
 
@@ -200,7 +292,7 @@
             const container = document.getElementById('ledger-list');
             const clearBtn = document.getElementById('btn-clear');
             if (ledger.length === 0) {
-                container.innerHTML = `<p class="text-xs italic text-gray-600 text-center py-4">No items logged in historical database.</p>`;
+                container.innerHTML = `<p class="text-xs italic text-gray-600 text-center py-4">No active specimen files loaded inside inventory logs.</p>`;
                 clearBtn.classList.add('hidden');
                 return;
             }
@@ -208,21 +300,30 @@
             container.innerHTML = ledger.map(item => `
                 <div class="pt-3 first:pt-0">
                     <div class="flex justify-between items-start">
-                        <div class="text-sm font-semibold text-gray-200">${item.name}</div>
-                        <div class="text-sm font-bold text-blue-400">$${item.value.toFixed(2)}</div>
+                        <div class="text-xs font-bold text-gray-200">${item.name}</div>
+                        <div class="text-xs font-black text-blue-400">$${item.value.toFixed(2)}</div>
                     </div>
-                    <div class="text-xs text-gray-500 mt-0.5">Grade: ${item.grade} | Logged: ${item.date}</div>
-                    ${item.errors.length ? `<div class="text-xs text-amber-500 font-medium mt-1">Errors: ${item.errors.join(', ')}</div>` : ''}
-                    ${item.notes ? `<div class="text-xs text-gray-400 italic mt-1.5 bg-[#0f172a] p-2 rounded">${item.notes}</div>` : ''}
+                    <div class="text-[10px] text-gray-500 mt-0.5">Grade Context: ${item.grade} | logged: ${item.date}</div>
+                    ${item.errors.length ? `<div class="text-[10px] text-amber-500 font-semibold mt-1">Multipliers: ${item.errors.join(', ')}</div>` : ''}
+                    ${item.notes ? `<div class="text-[10px] text-gray-400 italic mt-1.5 bg-[#0b0f17] p-2 rounded border border-gray-900">${item.notes}</div>` : ''}
                 </div>
             `).join('');
         }
 
         function clearLedger() {
-            ledger = [];
-            localStorage.removeItem('whatcoin_inventory_log');
-            renderLedger();
+            if(confirm("Purge historical ledger entries from local container storage?")) {
+                ledger = [];
+                localStorage.removeItem('whatcoin_inventory_log');
+                renderLedger();
+            }
         }
+
+        // Collapse dropdown if clicking outside search block
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#search-input')) {
+                document.getElementById('predictive-dropdown').classList.add('hidden');
+            }
+        });
 
         window.onload = init;
     </script>
