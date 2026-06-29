@@ -89,10 +89,11 @@
 
             btn.innerText = "EVALUATING...";
             
+            // Modified prompt to explicitly request only the dollar amount
             const payload = {
                 "contents": [{
                     "parts": [{
-                        "text": `Act as a numismatic expert. Provide the current estimated market value range in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} in ${document.getElementById('tone-select').value} condition. Be concise.`
+                        "text": `What is the estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} in ${document.getElementById('tone-select').value} condition? Respond ONLY with the numerical dollar amount or range (e.g., "$0.10 - $0.25"). Do not add conversational text.`
                     }]
                 }]
             };
@@ -105,11 +106,11 @@
                 });
 
                 const data = await response.json();
-                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No data returned.";
+                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No value found.";
                 
-                alert("Market Valuation Result:\n\n" + result);
+                alert("Market Valuation: " + result.trim());
             } catch (err) {
-                alert("Query failed. Please check your network or API key.");
+                alert("Error: Query failed.");
             } finally {
                 btn.innerText = "QUERY MARKET VALUATION";
             }
