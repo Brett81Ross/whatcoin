@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatCoin™ - Autonomous AI Suite</title>
+    <title>WhatCoin™ - Numismatic Matrix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
@@ -32,18 +32,32 @@
         </div>
 
         <div>
-            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Condition/Slang Term</label>
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Denomination</label>
+            <select id="denom-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
+                <option>Half Cent</option><option>Large Cent</option><option>Small Cent</option>
+                <option>Two Cent</option><option>Three Cent Nickel</option><option>Three Cent Silver</option>
+                <option>Shield Nickel</option><option>Liberty Nickel</option><option>Buffalo Nickel</option>
+                <option>Half Dime</option><option>Dime</option><option>Twenty Cent</option>
+                <option>Quarter</option><option>Half Dollar</option><option>Silver Dollar</option>
+                <option>Trade Dollar</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Condition / Toning / Variety</label>
             <select id="condition-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
-                <option value="Natural">Natural (Untoned)</option>
-                <option value="Red/Full Red">Red (Full Red)</option>
-                <option value="Rainbow Toning">Rainbow Toning</option>
-                <option value="Artificial Toning">Artificial Toning</option>
-                <option value="Cull">Cull (Low-value)</option>
-                <option value="Broadstrike">Broadstrike (Error)</option>
-                <option value="Cud">Cud (Error)</option>
-                <option value="Hairlines">Hairlines (Scratched)</option>
-                <option value="Slabbed">Slabbed</option>
-                <option value="Whizzed">Whizzed</option>
+                <option>Natural (Untoned)</option>
+                <option>Bag Toning</option>
+                <option>Rainbow Toning</option>
+                <option>Artificial Toning</option>
+                <option>Cull (Heavily Worn/Damaged)</option>
+                <option>Broadstrike (Error)</option>
+                <option>Cud (Die Break)</option>
+                <option>Hairlines (Scratched)</option>
+                <option>Slabbed (Certified)</option>
+                <option>Whizzed (Polished)</option>
+                <option>Bag Marks</option>
+                <option>Body Bag (Grading Rejection)</option>
             </select>
         </div>
 
@@ -51,7 +65,7 @@
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Mint Mark</label>
             <select id="mint-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
                 <option>None (Philadelphia)</option><option>P</option><option>D</option><option>S</option>
-                <option>W</option><option>O</option><option>CC</option>
+                <option>W</option><option>O</option><option>CC</option><option>C</option>
             </select>
         </div>
 
@@ -87,7 +101,7 @@
             const payload = {
                 "contents": [{
                     "parts": [{
-                        "text": `Act as a numismatic expert. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} coin, categorized as ${document.getElementById('condition-select').value}. Respond ONLY with the numerical dollar amount or range. Do not add conversational filler.`
+                        "text": `Act as a professional numismatist. Provide the current estimated market value in USD for a ${document.getElementById('year-select').value} ${document.getElementById('mint-select').value} ${document.getElementById('denom-select').value} described as: ${document.getElementById('condition-select').value}. Base your valuation on current PCGS market data. Respond ONLY with the numerical dollar amount or range. No extra conversational text.`
                     }]
                 }]
             };
@@ -100,7 +114,7 @@
                 });
 
                 const data = await response.json();
-                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No data.";
+                const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No valuation data available.";
                 
                 valText.innerText = result.trim();
                 display.classList.remove('hidden');
