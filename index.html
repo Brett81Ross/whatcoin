@@ -132,6 +132,10 @@
     </script>
 
     <script>
+        // Global request tracking variables to prevent async race conditions
+        let activeSearchId = 0;
+        let activeMultiplierId = 0;
+
         window.addEventListener('DOMContentLoaded', () => {
             const yearSelect = document.getElementById('year-select');
             let optionsStr = '';
@@ -139,7 +143,7 @@
                 optionsStr += `<option value="${y}">${y}</option>`;
             }
             yearSelect.innerHTML = optionsStr;
-            yearSelect.value = "1977";
+            yearSelect.value = "1961";
         });
 
         function updateGradeLabel(val) {
@@ -167,6 +171,7 @@
             };
         }
 
+        UX / Error Tracking Card Control
         function showError(msg) {
             const card = document.getElementById('status-card');
             const content = document.getElementById('status-content');
@@ -182,6 +187,10 @@
             showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
             if (!apiKey) { showError("Please enter your API key first."); return; }
+
+            // Increment tracker and isolate this execution cycle
+            activeMultiplierId++;
+            const currentId = activeMultiplierId;
 
             const config = getCompiledSelection();
             const multiplierBtn = document.getElementById('multiplier-btn');
@@ -199,13 +208,20 @@
                     model: "gemini-3.5-flash",
                     contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`
                 });
+                
+                // Drop payload execution if a newer button press took place
+                if (currentId !== activeMultiplierId) return;
                 targetText.innerText = response.text;
             } catch (error) {
                 console.error(error);
-                showError("Failed to fetch varieties. Check your API key parameters.");
+                if (currentId === activeMultiplierId) {
+                    showError("Failed to fetch varieties. Check your API key parameters.");
+                }
             } finally {
-                multiplierBtn.disabled = false;
-                multiplierBtn.innerText = "Multipliers";
+                if (currentId === activeMultiplierId) {
+                    multiplierBtn.disabled = false;
+                    multiplierBtn.innerText = "Multipliers";
+                }
             }
         }
 
@@ -213,6 +229,10 @@
             showError(null);
             const apiKey = document.getElementById('api-key-input').value.trim();
             if (!apiKey) { showError("Please enter your API key first."); return; }
+
+            // Increment tracker and isolate this execution cycle
+            activeSearchId++;
+            const currentId = activeSearchId;
 
             const config = getCompiledSelection();
             const searchBtn = document.getElementById('search-btn');
@@ -222,7 +242,6 @@
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
 
-                // Map numerical slider values to proper Sheldon notation text for the prompt
                 let sheldonNotation = `Grade ${config.grade}/70`;
                 const numGrade = parseInt(config.grade);
                 if (numGrade >= 60) sheldonNotation = `Mint State Uncirculated MS-${numGrade}`;
@@ -234,6 +253,9 @@
                     model: "gemini-3.5-flash",
                     contents: `Analyze coin: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation} on the standard 1-70 Sheldon scale. Output raw JSON data only matching exactly this schema format without markdown wrappers: {"name": "Precise Coin Title", "price": 0.00, "mintage_location": "Facility Name", "mintage_count": "Total Number or Unknown"}`
                 });
+
+                // Drop payload execution if a newer button press took place
+                if (currentId !== activeSearchId) return;
 
                 let rawText = response.text.trim();
                 if (rawText.startsWith("```")) {
@@ -251,10 +273,14 @@
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
                 console.error(error);
-                showError("Evaluation parsing failed. Try clicking Query Live AI again.");
+                if (currentId === activeSearchId) {
+                    showError("Evaluation parsing failed. Try clicking Query Live AI again.");
+                }
             } finally {
-                searchBtn.disabled = false;
-                searchBtn.innerText = "Query Live AI";
+                if (currentId === activeSearchId) {
+                    searchBtn.disabled = false;
+                    searchBtn.innerText = "Query Live AI";
+                }
             }
         }
     </script>
