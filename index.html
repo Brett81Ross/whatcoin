@@ -63,25 +63,24 @@
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-lg">
         <div class="flex justify-between items-center mb-1">
             <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Luster & Wear Condition Grade</h2>
-            <span id="grade-label" class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Fine (F-12)</span>
+            <span id="grade-label" class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">Good (4-6)</span>
         </div>
-        <p id="grade-desc" class="text-[11px] text-gray-500 mb-3">Moderate wear on all deep design elements.</p>
+        <p id="grade-desc" class="text-[11px] text-gray-500 mb-3">Heavy to moderate wear. Basic design forms are visible.</p>
         <input 
             id="grade-slider" 
             type="range" 
             min="0" 
-            max="5" 
+            max="4" 
             value="1" 
             oninput="handleGradeChange(this.value)"
             class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500"
         >
         <div class="flex justify-between text-[9px] text-gray-500 px-1 mt-2 font-bold uppercase tracking-wider">
-            <span>G-4</span>
-            <span>F-12</span>
-            <span>EF-40</span>
-            <span>AU-58</span>
-            <span>MS-63</span>
-            <span class="text-amber-400 font-black">PR-65</span>
+            <span>0-3 Bad</span>
+            <span>4-6 Good</span>
+            <span>8 VG</span>
+            <span>9 Fine</span>
+            <span>10 VF</span>
         </div>
     </div>
 
@@ -121,30 +120,29 @@
 
     <!-- App Configuration Logic Engine -->
     <script>
-        // Matrix price arrays updated to accommodate 6 slots: [G-4, F-12, EF-40, AU-58, MS-63, PR-65]
+        // Matrix prices now cleanly map across the 5 slider indices: [0-3 Bad, 4-6 Good, 8 Very Good, 9 Fine, 10 Very Fine]
         const NUMISMATIC_PRICING_MATRIX = {
             // Lincoln Wheat Pennies
-            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [60.00, 75.00, 95.00, 135.00, 260.00, 550.00] },
-            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [650.00, 850.00, 1100.00, 1450.00, 2400.00, 6000.00] },
-            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [90.00, 115.00, 140.00, 190.00, 375.00, 800.00] },
-            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [150.00, 220.00, 340.00, 620.00, 1650.00, 3200.00] },
-            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [450.00, 650.00, 900.00, 1700.00, 4800.00, 9500.00] },
+            "1931_S_PENNY": { name: "1931-S Lincoln Wheat Penny", type: "key", prices: [35.00, 60.00, 70.00, 75.00, 85.00] },
+            "1909_S_VDB_PENNY": { name: "1909-S VDB Lincoln Wheat Penny", type: "mega-key", prices: [450.00, 650.00, 750.00, 850.00, 975.00] },
+            "1909_S_PENNY": { name: "1909-S Lincoln Wheat Penny", type: "key", prices: [65.00, 90.00, 100.00, 115.00, 125.00] },
+            "1914_D_PENNY": { name: "1914-D Lincoln Wheat Penny", type: "key", prices: [95.00, 150.00, 185.00, 220.00, 280.00] },
+            "1922_NO_D_PENNY": { name: "1922 Plain 'No D' Lincoln Penny", type: "key", prices: [300.00, 450.00, 550.00, 650.00, 775.00] },
             
             // Silver Half Dollars
-            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [4.00, 6.00, 9.00, 14.00, 38.00, 75.00] }
+            "1970_D_HALF": { name: "1970-D Kennedy Half Dollar (40% Silver)", type: "semi-key", prices: [2.50, 4.00, 5.00, 6.00, 7.50] }
         };
 
         const CONDITION_TIERS = [
-            { idx: 0, code: "G-4", label: "Good (G-4)", desc: "Heavily worn. Major designs visible but flat; outlines clear." },
-            { idx: 1, code: "F-12", label: "Fine (F-12)", desc: "Moderate wear on all deep design elements; features distinct." },
-            { idx: 2, code: "EF-40", label: "Extra Fine (EF-40)", desc: "Slight wear on high spots. All design details crisp and sharp." },
-            { idx: 3, code: "AU-58", label: "About Uncirculated (AU-58)", desc: "Barely perceptible trace wear on high points; significant mint luster." },
-            { idx: 4, code: "MS-63", label: "Mint State (MS-63)", desc: "Uncirculated. Full original mint frost with minor contact marks." },
-            { idx: 5, code: "PR-65", label: "Proof (PR-65)", desc: "Specially struck specimen with highly polished mirror fields and frosted details." }
+            { idx: 0, code: "0-3", label: "Bad (0-3)", desc: "Severely worn, damaged, or heavily smoothed surfaces; basic outlines only." },
+            { idx: 1, code: "4-6", label: "Good (4-6)", desc: "Heavy to moderate wear. Main design forms and features are visible but flat." },
+            { idx: 2, code: "8", label: "Very Good (8)", desc: "Slightly more detail visible in the design elements and letter margins." },
+            { idx: 3, code: "9", label: "Fine (9)", desc: "Moderate wear on deep design parts. Major elements remain fully distinct." },
+            { idx: 4, code: "10", label: "Very Fine (10)", desc: "Slight wear on highest spots. All text lettering and main details are clear." }
         ];
 
         let selectedCoin = null;
-        let activeGradeIdx = 1; // Default to Fine (F-12)
+        let activeGradeIdx = 1; // Default to Good (4-6)
         let activeErrors = {};
         let ledger = [];
 
@@ -241,14 +239,6 @@
             const tier = CONDITION_TIERS[activeGradeIdx];
             document.getElementById('grade-label').innerText = tier.label;
             document.getElementById('grade-desc').innerText = tier.desc;
-            
-            // Adjust label visual colors if it is a Proof strike
-            if (activeGradeIdx === 5) {
-                document.getElementById('grade-label').className = "text-xs font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 shadow-sm animate-pulse";
-            } else {
-                document.getElementById('grade-label').className = "text-xs font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded";
-            }
-            
             calculateAppraisal();
         }
 
@@ -315,11 +305,10 @@
             let calculatedVal = 0.00;
 
             if (selectedCoin.isMatrix) {
-                // Pull data directly out of updated index array sequence 
                 calculatedVal = selectedCoin.priceCurve[activeGradeIdx];
             } else {
-                // Scales generic fallback rules up significantly if set to Proof setting
-                const genericMultiplier = activeGradeIdx === 5 ? 5.5 : 1 + (activeGradeIdx * 0.75); 
+                // Progressively scales dynamic item baselines across your new metrics
+                const genericMultiplier = 1 + (activeGradeIdx * 0.50); 
                 calculatedVal = selectedCoin.baseValue * genericMultiplier;
             }
 
@@ -343,7 +332,7 @@
             if (selectedCoin.isMatrix) {
                 finalValue = selectedCoin.priceCurve[activeGradeIdx];
             } else {
-                finalValue = selectedCoin.baseValue * (activeGradeIdx === 5 ? 5.5 : 1 + (activeGradeIdx * 0.75));
+                finalValue = selectedCoin.baseValue * (1 + (activeGradeIdx * 0.50));
             }
 
             let detectedMultiplierLabels = [];
