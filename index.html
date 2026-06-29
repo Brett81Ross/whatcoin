@@ -22,7 +22,12 @@
     <!-- Credentials -->
     <div class="glass p-4 rounded-xl mb-4">
         <label class="text-[10px] font-bold text-gray-500 uppercase">Gemini API Credentials</label>
-        <input type="password" id="api-key" value="************************" class="w-full bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 mt-1 text-sm font-mono text-gray-300">
+        <div class="flex items-center gap-2 mt-1">
+            <input type="password" id="api-key" value="************************" class="flex-grow bg-[#0b0f17] border border-[#1e293b] rounded-lg p-3 text-sm font-mono text-gray-300">
+            <button onclick="startVoiceSearch()" class="bg-[#1e293b] p-3 rounded-lg text-blue-400 hover:text-white transition-colors">
+                🎤
+            </button>
+        </div>
     </div>
 
     <!-- Main Controls -->
@@ -74,12 +79,31 @@
     <!-- Specification Display -->
     <div class="glass p-4 rounded-xl">
         <label class="text-[10px] font-bold text-gray-500 uppercase">Coin Specification</label>
-        <div class="text-white font-bold mt-1">1977 Lincoln Memorial Cent</div>
+        <div id="voice-result" class="text-white font-bold mt-1">1977 Lincoln Memorial Cent</div>
     </div>
 
     <script>
         function runQuery() {
             document.getElementById('error-box').classList.remove('hidden');
+        }
+
+        function startVoiceSearch() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Voice search is not supported in this browser.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('voice-result').innerText = transcript;
+                console.log("Voice Input:", transcript);
+            };
+
+            recognition.start();
         }
     </script>
 </body>
