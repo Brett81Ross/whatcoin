@@ -1,11 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: "YOUR_API_KEY" });
+const ai = new GoogleGenAI({}); // API key is typically managed via environment variables
 
 async function main() {
-  const response = await ai.models.generateContent({
+  const interaction = await ai.interactions.create({
     model: "gemini-3.5-flash",
-    contents: "Explain how AI works in a few words",
+    input: "Explain how AI works in a few words",
   });
-  console.log(response.text);
+  console.log(interaction.output_text);
 }
