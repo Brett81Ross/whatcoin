@@ -9,8 +9,6 @@
         body { background: radial-gradient(circle at top, #1a2234, #0b0f17); min-height: 100vh; color: #e2e8f0; }
         .glass-panel { background: rgba(17, 22, 34, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
         select, input { background-color: #0b0f17 !important; color: #fff !important; }
-        
-        /* Added motion for the button */
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4); }
             50% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.7); }
@@ -28,11 +26,6 @@
 
     <div class="glass-panel w-full max-w-sm p-6 rounded-3xl shadow-2xl space-y-4">
         <div>
-            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Gemini API Key</label>
-            <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-mono shadow-inner">
-        </div>
-
-        <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Year</label>
             <select id="year-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner"></select>
         </div>
@@ -40,12 +33,11 @@
         <div>
             <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Denomination</label>
             <select id="denom-select" class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-bold shadow-inner">
-                <option>Half Cent</option><option>Large Cent</option><option>Small Cent</option>
-                <option>Two Cent</option><option>Three Cent Nickel</option><option>Three Cent Silver</option>
-                <option>Shield Nickel</option><option>Liberty Nickel</option><option>Buffalo Nickel</option>
-                <option>Half Dime</option><option>Dime</option><option>Twenty Cent</option>
-                <option>Quarter</option><option>Half Dollar</option><option>Silver Dollar</option>
-                <option>Trade Dollar</option>
+                <option>Roosevelt Dime</option><option>Mercury Dime</option><option>Barber Dime</option><option>Seated Liberty Dime</option>
+                <option>Lincoln Cent</option><option>Indian Head Penny</option>
+                <option>Jefferson Nickel</option><option>Buffalo Nickel</option><option>Shield Nickel</option>
+                <option>Washington Quarter</option><option>Standing Liberty Quarter</option>
+                <option>Kennedy Half Dollar</option><option>Walking Liberty Half Dollar</option>
             </select>
         </div>
 
@@ -79,6 +71,12 @@
             QUERY MARKET VALUATION
         </button>
 
+        <!-- API Key moved to the bottom -->
+        <div class="pt-4 mt-4 border-t border-white/5">
+            <label class="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">Gemini API Key</label>
+            <input type="password" id="api-key" placeholder="Paste your API key here..." class="w-full mt-1.5 border border-white/10 rounded-xl p-4 text-sm font-mono shadow-inner">
+        </div>
+
         <div id="result-display" class="hidden mt-6 p-4 border border-blue-500/30 bg-blue-900/20 rounded-xl text-center">
             <p class="text-[9px] font-black text-blue-300 uppercase tracking-widest mb-1">Estimated Market Valuation</p>
             <div id="valuation-text" class="text-lg font-black text-white tracking-tight"></div>
@@ -87,7 +85,6 @@
 
     <script>
         const yearSelect = document.getElementById('year-select');
-        // Updated to end at 2026
         for (let i = 2026; i >= 1800; i--) {
             const opt = document.createElement('option');
             opt.value = i; opt.innerHTML = i;
