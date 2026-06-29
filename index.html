@@ -11,7 +11,7 @@
 
     <div class="text-center my-6 border-b border-gray-900 pb-4">
         <h1 class="text-3xl font-extrabold tracking-tight text-white">WhatCoin™</h1>
-        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite v2.2</p>
+        <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite v2.3</p>
     </div>
 
     <!-- API Credentials Container -->
@@ -20,7 +20,7 @@
         <input 
             id="api-key-input" 
             type="password" 
-            placeholder="Enter API Key..." 
+            placeholder="Enter API Key (AIzaSy...)" 
             class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
         >
     </div>
@@ -170,7 +170,6 @@
             };
         }
 
-        // Updated error diagnostic view
         function showError(msg) {
             const card = document.getElementById('status-card');
             const content = document.getElementById('status-content');
@@ -180,6 +179,36 @@
             } else {
                 card.classList.add('hidden');
             }
+        }
+
+        // Native HTTP POST implementation fallback for bulletproof authentication handling
+        async function fetchDirectRestFallback(apiKey, prompt, schemaConfig = null) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }]
+            };
+
+            if (schemaConfig) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json",
+                    responseSchema: schemaConfig
+                };
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `HTTP Request failed with status code ${response.status}`);
+            }
+
+            const resData = await response.json();
+            return resData.candidates[0].content.parts[0].text;
         }
 
         async function fetchMultipliers() {
@@ -200,19 +229,28 @@
             targetDisplay.classList.remove('hidden');
             targetText.innerText = "Querying varieties database...";
 
+            const promptText = `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`;
+
             try {
-                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash",
-                    contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a clean bulleted list.`
-                });
+                let textResult = "";
+                try {
+                    const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                    const response = await ai.models.generateContent({
+                        model: "gemini-2.5-flash",
+                        contents: promptText
+                    });
+                    textResult = response.text;
+                } catch (sdkError) {
+                    console.warn("SDK layer rejected key scheme. Activating REST architecture fallback...", sdkError);
+                    textResult = await fetchDirectRestFallback(apiKey, promptText);
+                }
                 
                 if (currentId !== activeMultiplierId) return;
-                targetText.innerText = response.text;
+                targetText.innerText = textResult;
             } catch (error) {
                 console.error(error);
                 if (currentId === activeMultiplierId) {
-                    showError(`API Error: ${error.message || error}`);
+                    showError(`Authentication/API Error: ${error.message || error}\n\nTip: Double check your API key string has no typos or missing characters.`);
                 }
             } finally {
                 if (currentId === activeMultiplierId) {
@@ -235,38 +273,47 @@
             searchBtn.disabled = true;
             searchBtn.innerText = "Analyzing...";
 
+            let sheldonNotation = `Grade ${config.grade}/70`;
+            const numGrade = parseInt(config.grade);
+            if (numGrade >= 60) sheldonNotation = `Mint State Uncirculated MS-${numGrade}`;
+            else if (numGrade >= 50) sheldonNotation = `About Uncirculated AU-${numGrade}`;
+            else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
+            else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
+
+            const promptText = `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}.`;
+            
+            const strictSchema = {
+                type: "OBJECT",
+                properties: {
+                    name: { type: "STRING" },
+                    price: { type: "NUMBER" },
+                    mintage_location: { type: "STRING" },
+                    mintage_count: { type: "STRING" }
+                },
+                required: ["name", "price", "mintage_location", "mintage_count"]
+            };
+
             try {
-                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-
-                let sheldonNotation = `Grade ${config.grade}/70`;
-                const numGrade = parseInt(config.grade);
-                if (numGrade >= 60) sheldonNotation = `Mint State Uncirculated MS-${numGrade}`;
-                else if (numGrade >= 50) sheldonNotation = `About Uncirculated AU-${numGrade}`;
-                else if (numGrade >= 40) sheldonNotation = `Extremely Fine EF-${numGrade}`;
-                else if (numGrade >= 20) sheldonNotation = `Very Fine VF-${numGrade}`;
-
-                // Leverage strict schema configuration to guarantee structured data
-                const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash",
-                    contents: `Analyze standard market transaction values for this coin setup: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Condition: ${sheldonNotation}.`,
-                    config: {
-                        responseMimeType: "application/json",
-                        responseSchema: {
-                            type: "OBJECT",
-                            properties: {
-                                name: { type: "STRING" },
-                                price: { type: "NUMBER" },
-                                mintage_location: { type: "STRING" },
-                                mintage_count: { type: "STRING" }
-                            },
-                            required: ["name", "price", "mintage_location", "mintage_count"]
+                let rawJsonText = "";
+                try {
+                    const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                    const response = await ai.models.generateContent({
+                        model: "gemini-2.5-flash",
+                        contents: promptText,
+                        config: {
+                            responseMimeType: "application/json",
+                            responseSchema: strictSchema
                         }
-                    }
-                });
+                    });
+                    rawJsonText = response.text;
+                } catch (sdkError) {
+                    console.warn("SDK initialization bypass. Transitioning directly to target endpoint...", sdkError);
+                    rawJsonText = await fetchDirectRestFallback(apiKey, promptText, strictSchema);
+                }
 
                 if (currentId !== activeSearchId) return;
 
-                const data = JSON.parse(response.text.trim());
+                const data = JSON.parse(rawJsonText.trim());
                 
                 document.getElementById('target-coin-name').innerText = data.name;
                 document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
@@ -279,7 +326,7 @@
             } catch (error) {
                 console.error(error);
                 if (currentId === activeSearchId) {
-                    showError(`Engine Error: ${error.message || error}`);
+                    showError(`Authentication/API Error: ${error.message || error}\n\nTip: If this is an 'invalid authentication credentials' message, make sure your copied API key string doesn't have an extra space at the beginning or end.`);
                 }
             } finally {
                 if (currentId === activeSearchId) {
