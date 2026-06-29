@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +15,7 @@
         <p class="text-xs text-blue-400 mt-1 uppercase tracking-widest font-semibold">Autonomous AI Intelligence Suite</p>
     </div>
 
+    <!-- API Credentials Container -->
     <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg">
         <label class="block text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Gemini API Credentials</label>
         <input 
@@ -24,16 +26,97 @@
         >
     </div>
 
-    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl">
-        <input id="search-input" type="text" placeholder="Enter Year, Mint Mark, Variety..." class="w-full bg-[#182032] rounded-lg p-3.5 mb-2 text-sm text-white placeholder-gray-500 border border-[#2e3b54]">
-        <button id="search-btn" onclick="executeSearch()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider">Query Live AI Engine</button>
+    <!-- Structured Parameter Controls -->
+    <div class="bg-[#111622] rounded-xl p-4 mb-4 border border-[#222c3f] shadow-2xl space-y-3">
+        
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Denomination</label>
+            <select id="denom-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                <option value="1c">Cent (Penny)</option>
+                <option value="5c">Nickel</option>
+                <option value="10c">Dime</option>
+                <option value="25c">Quarter</option>
+                <option value="50c">Half Dollar</option>
+                <option value="11">Dollar Coin</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Year</label>
+                <select id="year-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                    <!-- Dynamic generation via JavaScript -->
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Mint Mark</label>
+                <select id="mint-select" class="w-full bg-[#182032] rounded-lg p-3 text-sm text-white border border-[#2e3b54] focus:outline-none focus:border-blue-500">
+                    <option value="P (Philadelphia)">P (Philadelphia)</option>
+                    <option value="D (Denver)">D (Denver)</option>
+                    <option value="S (San Francisco)">S (San Francisco)</option>
+                    <option value="W (West Point)">W (West Point)</option>
+                    <option value="No Mint Mark">No Mint Mark</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grade Selection Control -->
+        <div>
+            <div class="flex justify-between items-center mb-1">
+                <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Grade Scale Evaluation</label>
+                <span id="grade-badge" class="text-xs bg-blue-900/40 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-bold">5 - Standard</span>
+            </div>
+            <input 
+                id="grade-slider" 
+                type="range" 
+                min="0" 
+                max="10" 
+                value="5" 
+                class="w-full h-2 bg-[#182032] rounded-lg appearance-none cursor-pointer accent-blue-500 border border-[#2e3b54]"
+                oninput="updateGradeLabel(this.value)"
+            >
+            <div class="flex justify-between text-[10px] text-gray-500 mt-1">
+                <span>0 (Bad)</span>
+                <span>10 (Very Fine)</span>
+            </div>
+        </div>
+
+        <!-- Action Matrix -->
+        <div class="grid grid-cols-5 gap-2 pt-2">
+            <button id="multiplier-btn" onclick="fetchMultipliers()" class="col-span-2 bg-[#1b253b] hover:bg-[#23304d] text-amber-400 border border-amber-500/30 font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">
+                Multipliers
+            </button>
+            <button id="search-btn" onclick="executeSearch()" class="col-span-3 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-xs uppercase tracking-wider transition-colors">
+                Query Live AI
+            </button>
+        </div>
     </div>
 
-    <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden">
-        <h3 id="target-coin-name" class="text-lg font-bold text-white">---</h3>
+    <!-- Defect Multiplier Diagnostic Output -->
+    <div id="multiplier-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-amber-500/20 shadow-lg hidden">
+        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2">Target Defect Anomalies & Varieties</h4>
+        <p id="multiplier-content" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line">Scanning definitions...</p>
     </div>
 
-    <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center">
+    <!-- Metric Display Panels -->
+    <div id="target-specimen-card" class="bg-[#111622] rounded-xl p-4 mb-4 border border-blue-500/20 shadow-lg hidden space-y-2">
+        <div>
+            <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Coin Specification</label>
+            <h3 id="target-coin-name" class="text-base font-bold text-white">---</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-800">
+            <div>
+                <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Mintage Location</label>
+                <div id="display-location" class="text-xs font-semibold text-blue-400">---</div>
+            </div>
+            <div>
+                <label class="block text-[10px] uppercase font-bold tracking-wider text-gray-500">Total Mintage</label>
+                <div id="display-mintage" class="text-xs font-semibold text-blue-400">---</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-[#152035] rounded-xl p-5 mb-4 border border-blue-400 text-center shadow-inner">
         <div id="display-value" class="text-5xl font-black text-white">$0.00</div>
     </div>
 
@@ -46,37 +129,100 @@
     </script>
 
     <script>
-        async function executeSearch() {
-            const rawInput = document.getElementById('search-input').value.trim();
-            const apiKey = document.getElementById('api-key-input').value.trim();
+        // Populate custom years dynamically into container
+        window.addEventListener('DOMContentLoaded', () => {
+            const yearSelect = document.getElementById('year-select');
+            const currentYear = 2026;
+            let optionsStr = '';
+            for(let y = currentYear; y >= 1800; y--) {
+                optionsStr += `<option value="${y}">${y}</option>`;
+            }
+            yearSelect.innerHTML = optionsStr;
+            yearSelect.value = "1981";
+        });
+
+        function updateGradeLabel(val) {
+            const badge = document.getElementById('grade-badge');
+            let label = "Standard";
+            if (parseInt(val) === 0) label = "0 (Bad)";
+            else if (parseInt(val) === 10) label = "10 (Very Fine)";
+            else if (parseInt(val) > 7) label = "High Condition";
+            else if (parseInt(val) < 4) label = "Low Grade";
             
+            badge.innerText = `${val} - ${label}`;
+        }
+
+        function getCompiledSelection() {
+            return {
+                denomination: document.getElementById('denom-select').options[document.getElementById('denom-select').selectedIndex].text,
+                year: document.getElementById('year-select').value,
+                mint: document.getElementById('mint-select').value,
+                grade: document.getElementById('grade-slider').value
+            };
+        }
+
+        async function fetchMultipliers() {
+            const apiKey = document.getElementById('api-key-input').value.trim();
             if (!apiKey) { alert("Please enter your API key."); return; }
 
+            const config = getCompiledSelection();
+            const multiplierBtn = document.getElementById('multiplier-btn');
+            const targetDisplay = document.getElementById('multiplier-card');
+            const targetText = document.getElementById('multiplier-content');
+
+            multiplierBtn.disabled = true;
+            multiplierBtn.innerText = "Scanning...";
+            targetDisplay.classList.remove('hidden');
+            targetText.innerText = "Querying modern historical anomalies database...";
+
+            try {
+                const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
+                const response = await ai.models.generateContent({
+                    model: "gemini-3.5-flash",
+                    contents: `Identify well-known varieties, errors, and key defect multipliers for a ${config.year} ${config.mint} ${config.denomination}. Provide a highly precise bulleted list for a coin roll hunter highlighting errors to match lookups.`
+                });
+
+                targetText.innerText = response.text;
+            } catch (error) {
+                console.error("Multiplier Diagnostic Error:", error);
+                targetText.innerText = "Error pulling variety analysis data.";
+            } finally {
+                multiplierBtn.disabled = false;
+                multiplierBtn.innerText = "Multipliers";
+            }
+        }
+
+        async function executeSearch() {
+            const apiKey = document.getElementById('api-key-input').value.trim();
+            if (!apiKey) { alert("Please enter your API key."); return; }
+
+            const config = getCompiledSelection();
             const searchBtn = document.getElementById('search-btn');
             searchBtn.disabled = true;
             searchBtn.innerText = "Analyzing...";
 
             try {
-                // Initialize using the correct global reference
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
 
-                // Call using the correct SDK syntax for models
+                // Schema now strictly requests precise mintage volume and location details
                 const response = await ai.models.generateContent({
                     model: "gemini-3.5-flash",
-                    contents: `Analyze coin: "${rawInput}". Return JSON only: {"name": "Example Coin", "price": 0.00}`,
+                    contents: `Analyze coin specification parameters: Denomination: ${config.denomination}, Year: ${config.year}, Mint Mark: ${config.mint}, Custom Scale Grade Status: ${config.grade} out of 10 (where 0 is completely bad/worn smooth and 10 represents standard collector Choice Very Fine attributes). Output JSON data tracking exactly this schema layout format: {"name": "Precise Coin Metadata Title String", "price": 0.00, "mintage_location": "Facility Name String", "mintage_count": "Total Number String or Unknown"}`,
                     config: { responseMimeType: "application/json" }
                 });
 
                 const data = JSON.parse(response.text);
                 document.getElementById('target-coin-name').innerText = data.name;
+                document.getElementById('display-location').innerText = data.mintage_location || "Unknown";
+                document.getElementById('display-mintage').innerText = data.mintage_count || "Unknown";
                 document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
-                console.error("AI Error:", error);
-                alert("AI Error. Ensure your API key is valid for gemini-3.5-flash and that your connection is secure.");
+                console.error("AI Evaluation Engine Error:", error);
+                alert("AI Error. Ensure your configuration values run cleanly.");
             } finally {
                 searchBtn.disabled = false;
-                searchBtn.innerText = "Query Live AI Engine";
+                searchBtn.innerText = "Query Live AI";
             }
         }
     </script>
