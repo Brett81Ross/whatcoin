@@ -3,54 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dope House Coins™ - Autonomous Numismatic Suite</title>
+    <title>Dope House Coins™ - Numismatic Matrix</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body { background-color: #0b0f17; color: #f0f4f8; }
-        .logo-glow { filter: drop-shadow(0px 0px 8px rgba(239, 68, 68, 0.2)) drop-shadow(0px 0px 15px rgba(245, 158, 11, 0.15)); }
+        
+        /* Video Game Retro Pixel Grid Shimmer Effects */
+        @keyframes pixelShimmer {
+            0% { transform: translate(-30px, -30px); opacity: 0; }
+            50% { opacity: 0.4; }
+            100% { transform: translate(30px, 30px); opacity: 0; }
+        }
+        .pixel-shimmer {
+            animation: pixelShimmer 3s infinite linear;
+        }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto font-sans antialiased">
 
-    <!-- Brand Header & Logo Layer Inspired by file a042530c-78be-45e2-b64d-b4265d13479d -->
+    <!-- Brand Header & Retro Video Game Pixel Penny inspired by file a042530c-78be-45e2-b64d-b4265d13479d -->
     <div class="text-center my-6 border-b border-gray-900 pb-5 flex flex-col items-center">
-        <div class="w-32 h-32 mb-3 logo-glow">
-            <!-- Inline SVG replicating the exact isometric coin pitch, rim profile, and reeding marks from a042530c-78be-45e2-b64d-b4265d13479d -->
-            <svg viewBox="0 0 200 250" class="w-full h-full text-white" xmlns="http://www.w3.org/2000/svg">
-                <!-- Outer Reeded Coin Edge (3D depth layer) -->
-                <ellipse cx="95" cy="125" rx="55" ry="95" fill="#161f33" stroke="#f59e0b" stroke-width="4" transform="rotate(-15, 95, 125)" />
+        <div class="w-36 h-36 mb-3 relative drop-shadow-[0_0_15px_rgba(249,115,22,0.4)]">
+            
+            <!-- Video Game Style Pixel Penny SVG Assembly -->
+            <svg viewBox="0 0 200 220" class="w-full h-full" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
                 
-                <!-- Individual Coin Reeds / Edge Grooves from sketch -->
-                <g stroke="#f59e0b" stroke-width="3" opacity="0.85" transform="rotate(-15, 95, 125)">
-                    <line x1="142" y1="60" x2="152" y2="65" />
-                    <line x1="146" y1="80" x2="156" y2="85" />
-                    <line x1="148" y1="100" x2="158" y2="105" />
-                    <line x1="149" y1="120" x2="159" y2="125" />
-                    <line x1="147" y1="140" x2="157" y2="145" />
-                    <line x1="143" y1="160" x2="153" y2="165" />
-                    <line x1="136" y1="180" x2="146" y2="185" />
-                    <line x1="126" y1="198" x2="136" y2="203" />
+                <!-- 1. RETRO BACKGROUND SHADOW / PIXEL DROP (Chunky Arcade Effect) -->
+                <g fill="#05070b" transform="translate(6, 8)">
+                    <path d="M 70 30 H 130 V 40 H 150 V 60 H 160 V 150 H 150 V 170 H 130 V 180 H 70 V 170 H 50 V 150 H 40 V 60 H 50 V 40 Z" />
                 </g>
 
-                <!-- Front Coin Face Obverse Oval Rim Boundary -->
-                <ellipse cx="87" cy="122" rx="53" ry="93" fill="#111622" stroke="#ef4444" stroke-width="4.5" transform="rotate(-15, 87, 122)" />
-                
-                <!-- Inner Die Fields Tonal Reflection -->
-                <ellipse cx="87" cy="122" rx="46" ry="84" fill="#141b2d" opacity="0.9" transform="rotate(-15, 87, 122)" />
-                
-                <!-- Stylized Text Layout mimicking handwritten placement within a042530c-78be-45e2-b64d-b4265d13479d -->
-                <g font-family="system-ui, -apple-system, sans-serif" font-weight="900" text-anchor="middle" fill="#ffffff">
-                    <text x="82" y="90" font-size="20" letter-spacing="0.5" fill="#ffffff" transform="rotate(-8, 82, 90)">DOPE</text>
-                    <text x="83" y="124" font-size="18" letter-spacing="0.5" fill="#f59e0b" transform="rotate(-8, 83, 124)">HOUSE</text>
-                    <text x="84" y="156" font-size="17" letter-spacing="1" fill="#ef4444" transform="rotate(-8, 84, 156)">COINS</text>
+                <!-- 2. COPPER PENNY OUTSIDE EDGE & REEDS (Isometric Rim Base Layer) -->
+                <g fill="#7c2d12"> <!-- Deep Dark Burnished Copper Rim Shadow -->
+                    <path d="M 68 28 H 132 V 38 H 152 V 58 H 162 V 152 H 152 V 172 H 132 V 182 H 68 V 172 H 48 V 152 H 38 V 58 H 48 V 38 Z" />
                 </g>
 
-                <!-- Tiny Tiny Trademark Identifier inside the rim field -->
-                <text x="114" y="168" font-family="sans-serif" font-size="7" font-weight="bold" fill="#64748b">TM</text>
+                <!-- Chunky Video Game Edge Reeding Marks on the right-hand isometric slope -->
+                <g fill="#ea580c">
+                    <rect x="146" y="56" width="6" height="4" />
+                    <rect x="152" y="74" width="6" height="4" />
+                    <rect x="154" y="92" width="6" height="4" />
+                    <rect x="152" y="110" width="6" height="4" />
+                    <rect x="148" y="128" width="6" height="4" />
+                    <rect x="140" y="146" width="6" height="4" />
+                    <rect x="128" y="162" width="6" height="4" />
+                </g>
+
+                <!-- 3. MAIN COIN FACE OBVERSE (Pixelated Core Field) -->
+                <g fill="#f97316"> <!-- Primary Bright Copper Penny Hue -->
+                    <path d="M 66 32 H 126 V 42 H 144 V 60 H 154 V 144 H 144 V 164 H 126 V 174 H 66 V 164 H 46 V 144 H 36 V 60 H 46 V 42 Z" />
+                </g>
+
+                <!-- 4. RETRO VIDEO GAME HIGHLIGHT SHADING (Top/Left Pixel Glint) -->
+                <g fill="#ffedd5">
+                    <rect x="66" y="32" width="60" height="4" />
+                    <rect x="46" y="42" width="20" height="4" />
+                    <rect x="36" y="60" width="10" height="30" />
+                </g>
+
+                <!-- 5. RETRO VIDEO GAME INTERNAL INNER FIELDS SHADOW -->
+                <g fill="#c2410c">
+                    <path d="M 126 160 H 144 V 144 H 150 V 64 H 140 V 46 H 126 V 42 Z" opacity="0.6"/>
+                </g>
+
+                <!-- 6. HIGH-CONTRAST 8-BIT / 16-BIT RETRO TYPOGRAPHY LOGO ASSEMBLY -->
+                <!-- Dropped shadow texts for that definitive arcade cartridge text thickness -->
+                <g font-family="'Courier New', Courier, monospace" font-weight="900" text-anchor="middle">
+                    
+                    <!-- Text Shading Layers -->
+                    <text x="94" y="80" font-size="20" fill="#431407" transform="skewY(-6)">DOPE</text>
+                    <text x="94" y="116" font-size="18" fill="#431407" transform="skewY(-6)">HOUSE</text>
+                    <text x="94" y="150" font-size="17" fill="#431407" transform="skewY(-6)">COINS</text>
+                    
+                    <!-- Foreground Text Layers (Crisp Game Palette) -->
+                    <text x="92" y="78" font-size="20" fill="#ffffff" transform="skewY(-6)">DOPE</text>
+                    <text x="92" y="114" font-size="18" fill="#facc15" transform="skewY(-6)">HOUSE</text>
+                    <text x="92" y="114" font-size="18" fill="#facc15" transform="skewY(-6)" opacity="0.5" class="animate-pulse">HOUSE</text>
+                    <text x="92" y="148" font-size="17" fill="#f97316" transform="skewY(-6)">COINS</text>
+                </g>
+
+                <!-- 7. RETRO POWER-UP GLINT SPARKLES (Classic Video Game Accents) -->
+                <g fill="#ffffff">
+                    <!-- Top Left Sparkle -->
+                    <rect x="52" y="52" width="4" height="4" />
+                    <rect x="48" y="56" width="12" height="4" />
+                    <rect x="52" y="60" width="4" height="4" />
+                    
+                    <!-- Bottom Right Sparkle -->
+                    <rect x="134" y="140" width="4" height="4" />
+                    <rect x="130" y="144" width="12" height="4" />
+                    <rect x="134" y="148" width="4" height="4" />
+                </g>
+
+                <!-- Video Game Animated Level Shimmer Vector Overlay -->
+                <line x1="10" y1="10" x2="190" y2="190" stroke="#ffffff" stroke-width="6" class="pixel-shimmer" pointer-events="none" />
+                
+                <!-- Trademark System Marker -->
+                <text x="122" y="162" font-family="sans-serif" font-size="8" font-weight="black" fill="#431407" transform="skewY(-6)">™</text>
+                <text x="121" y="161" font-family="sans-serif" font-size="8" font-weight="black" fill="#ffffff" transform="skewY(-6)">™</text>
             </svg>
         </div>
-        <h1 class="text-3xl font-black tracking-tight text-white uppercase">Dope House Coins<span class="text-xs text-red-500 align-super font-bold">™</span></h1>
-        <p class="text-xs text-amber-400 mt-1 uppercase tracking-widest font-semibold">Autonomous Valuation Engine & Verification Suite</p>
+        <h1 class="text-3xl font-black tracking-tight text-white uppercase font-mono">Dope House Coins<span class="text-xs text-yellow-400 align-super font-bold">™</span></h1>
+        <p class="text-[10px] text-orange-400 mt-1 uppercase tracking-widest font-bold font-mono bg-orange-950/40 px-2 py-0.5 rounded border border-orange-500/20">Autonomous Appraisals & Pixel Analytics Suite</p>
     </div>
 
     <!-- API Credentials Container -->
@@ -239,7 +293,6 @@
             badge.innerText = label;
         }
 
-        view=getCompiledSelection;
         function getCompiledSelection() {
             return {
                 denomination: document.getElementById('denom-select').options[document.getElementById('denom-select').selectedIndex].text,
