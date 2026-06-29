@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatCoin™ - Autonomous Numismatic Engine</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        body { background-color: #0b0f17; color: #f0f4f8; }
-    </style>
+    <style>body { background-color: #0b0f17; color: #f0f4f8; }</style>
 </head>
 <body class="p-4 max-w-md mx-auto font-sans antialiased">
 
@@ -21,9 +19,8 @@
         <input 
             id="api-key-input" 
             type="password" 
-            placeholder="Paste gemini_api_key_3 here..." 
+            placeholder="Enter API Key..." 
             class="w-full bg-[#182032] rounded-lg p-3 text-xs text-white placeholder-gray-500 border border-[#2e3b54] focus:outline-none focus:border-amber-500 transition-all font-mono"
-            onchange="saveApiKey(this.value)"
         >
     </div>
 
@@ -49,18 +46,11 @@
     </script>
 
     <script>
-        function saveApiKey(val) { localStorage.setItem('gemini_api_key_3', val.trim()); }
-
-        function init() {
-            const savedKey = localStorage.getItem('gemini_api_key_3');
-            if (savedKey) document.getElementById('api-key-input').value = savedKey;
-        }
-
         async function executeSearch() {
             const rawInput = document.getElementById('search-input').value.trim();
-            const apiKey = localStorage.getItem('gemini_api_key_3');
+            const apiKey = document.getElementById('api-key-input').value.trim();
             
-            if (!apiKey) { alert("Please input gemini_api_key_3."); return; }
+            if (!apiKey) { alert("Please enter your API key."); return; }
 
             const searchBtn = document.getElementById('search-btn');
             searchBtn.disabled = true;
@@ -68,7 +58,6 @@
 
             try {
                 const ai = new window.GoogleGenAIInstance({ apiKey: apiKey });
-                // Updated to gemini-3.5-flash
                 const model = ai.getGenerativeModel({ model: "gemini-3.5-flash" });
 
                 const result = await model.generateContent({
@@ -81,15 +70,13 @@
                 document.getElementById('display-value').innerText = `$${data.price.toFixed(2)}`;
                 document.getElementById('target-specimen-card').classList.remove('hidden');
             } catch (error) {
-                console.error("AI Error Details:", error);
-                alert("AI Error. Ensure gemini_api_key_3 is valid for gemini-3.5-flash.");
+                console.error("AI Error:", error);
+                alert("AI Error. Ensure your API key is valid for gemini-3.5-flash and that your connection is secure.");
             } finally {
                 searchBtn.disabled = false;
                 searchBtn.innerText = "Query Live AI Engine";
             }
         }
-
-        document.addEventListener("DOMContentLoaded", init);
     </script>
 </body>
 </html>
